@@ -1,0 +1,22 @@
+python ../parlai/scripts/train_model.py \
+    --task reddit \
+    --model hred \
+    --model-file ../../checkpoint/hred/pretrain/model \
+    --batchsize 192 \
+    --validation-metric loss \
+    --skip-generation True \
+    --validation-every-n-epochs 1 \
+    --optimizer adamax \
+    --learningrate 1e-4 \
+    --dict-tokenizer bpe \
+    --dict-lower True \
+    --embedding-type glove \
+    --embeddingsize 300 \
+    --hiddensize 512 \
+    --numlayers 2 \
+    --lookuptable all \
+    --text-truncate 360 \
+    --label-truncate 72 \
+    --person-tokens True \
+    --num-epochs 15 \
+    --validation-patience 10
