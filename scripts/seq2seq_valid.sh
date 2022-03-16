@@ -1,0 +1,13 @@
+python ../parlai/scripts/eval_model.py \
+    --datatype valid \
+    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,personachat \
+    --model seq2seq \
+    --model-file ../../checkpoint/seq2seq/joint-fine-tuning/model \
+    --batchsize 32 \
+    --skip-generation False \
+    --inference beam \
+    --beam-size 10 \
+    --beam-length-penalty 0.65 \
+    --beam-block-ngram 3 \
+    --beam-context-block-ngram 3 \
+    --metrics ppl,bleu,distinct
