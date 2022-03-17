@@ -2,7 +2,7 @@ python ../parlai/scripts/train_model.py \
     --task reddit \
     --model hred \
     --model-file ../../checkpoint/hred/pretrain/model \
-    --batchsize 200 \
+    --batchsize 128 \
     --validation-metric loss \
     --skip-generation True \
     --validation-every-n-epochs 1 \

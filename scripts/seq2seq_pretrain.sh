@@ -2,7 +2,7 @@ python ../parlai/scripts/train_model.py \
     --task reddit \
     --model seq2seq \
     --model-file ../../checkpoint/seq2seq/pretrain/model \
-    --batchsize 200 \
+    --batchsize 128 \
     --validation-metric loss \
     --skip-generation True \
     --validation-every-n-epochs 1 \
