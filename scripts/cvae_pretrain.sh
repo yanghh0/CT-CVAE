@@ -1,7 +1,7 @@
 python ../parlai/scripts/train_model.py \
     --task reddit \
-    --model hred \
-    --model-file ../../checkpoint/hred/pretrain/model \
+    --model cvae \
+    --model-file ../../checkpoint/cvae/pretrain/model \
     --batchsize 128 \
     --validation-metric loss \
     --skip-generation True \
@@ -13,10 +13,10 @@ python ../parlai/scripts/train_model.py \
     --embedding-type glove \
     --embeddingsize 300 \
     --hiddensize 512 \
-    --numlayers 2 \
-    --lookuptable all \
+    --latentsize 128 \
     --text-truncate 360 \
     --label-truncate 72 \
     --person-tokens True \
     --num-epochs 15 \
-    --validation-patience 10
+    --validation-patience 1
+

@@ -7,7 +7,7 @@ python ../parlai/scripts/train_model.py \
     --skip-generation True \
     --validation-every-n-epochs 1 \
     --optimizer adamax \
-    --learningrate 1e-4 \
+    --learningrate 3e-4 \
     --dict-tokenizer bpe \
     --dict-lower True \
     --rnn-class lstm \

@@ -1,5 +1,5 @@
 python ../parlai/scripts/train_model.py \
-    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,personachat,cornell_movie \
+    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,personachat \
     --model seq2seq \
     --init-model ../../checkpoint/seq2seq/pretrain/model \
     --model-file ../../checkpoint/seq2seq/joint-fine-tuning/model \
