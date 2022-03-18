@@ -271,6 +271,7 @@ class TransformerDecoder(nn.Module):
             )
 
         self.input_layer = nn.Linear(self.embedding_size, self.d_model, bias=False)
+        nn.init.xavier_normal_(self.input_layer.weight)
 
     def forward_embedding(
         self,
