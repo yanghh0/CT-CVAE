@@ -35,14 +35,6 @@ class RedditTeacherForDialog(DialogTeacher):
                 for i in [0, 2]:
                     yield {'text': sentence_list[i], 'label': sentence_list[i + 1]}, i == 0
 
-        # with codecs.open(turns5_file, 'r') as f:
-        #     for line in f:
-        #         sentence_list = line.strip().split("\t")
-        #         if len(sentence_list) != 5:
-        #             continue
-        #         for i in [0, 2]:
-        #             yield {'text': sentence_list[i], 'label': sentence_list[i + 1]}, i == 0
-
 
 class DefaultTeacher(RedditTeacherForDialog):
     pass
