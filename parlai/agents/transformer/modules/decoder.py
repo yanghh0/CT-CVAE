@@ -270,6 +270,7 @@ class TransformerDecoder(nn.Module):
                 )  # type: ignore
             )
 
+        self.o2e = nn.Linear(self.d_model, self.embedding_size, bias=True)
         self.input_layer = nn.Linear(self.embedding_size, self.d_model, bias=False)
         nn.init.xavier_normal_(self.input_layer.weight)
 
@@ -394,7 +395,7 @@ class TransformerDecoder(nn.Module):
         if self.variant == 'prelayernorm':
             tensor = self.norm_embeddings(tensor)
 
-        tensor = F.linear(tensor, self.input_layer.weight.t())
+        tensor = self.o2e(tensor)
 
         return tensor, new_incr_state
 
