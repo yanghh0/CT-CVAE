@@ -1,5 +1,5 @@
 python ../parlai/scripts/train_model.py \
-    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2,cornell_movie \
+    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2 \
     --model transformer/generator \
     --init-model ../../checkpoint/transformer/pretrain/model \
     --model-file ../../checkpoint/transformer/joint-fine-tuning/model \
