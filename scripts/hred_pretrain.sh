@@ -19,4 +19,4 @@ python ../parlai/scripts/train_model.py \
     --label-truncate 72 \
     --person-tokens True \
     --num-epochs 15 \
-    --validation-patience 10
+    --validation-patience 1
