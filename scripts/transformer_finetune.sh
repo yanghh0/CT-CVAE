@@ -6,7 +6,7 @@ python ../parlai/scripts/train_model.py \
     --batchsize 32 \
     --validation-metric loss \
     --skip-generation True \
-    --validation-every-n-epochs 0.2 \
+    --validation-every-n-epochs 0.25 \
     --optimizer adamax \
     --learningrate 1e-4 \
     --dict-tokenizer bpe \
