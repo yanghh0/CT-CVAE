@@ -114,5 +114,5 @@ class MultiturnTeacher(FixedDialogTeacher):
         return shared
 
 
-class DefaultTeacher(UbuntuTeacher):
+class DefaultTeacher(MultiturnTeacher):
     pass
