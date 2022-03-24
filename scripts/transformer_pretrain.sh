@@ -16,7 +16,7 @@ python ../parlai/scripts/train_model.py \
     --ffn-size 2048 \
     --n-heads 8 \
     --n-encoder-layers 6 \
-    --n-decoder-layers 6 \
+    --n-decoder-layers 8 \
     --dropout 0.1 \
     --text-truncate 360 \
     --label-truncate 72 \
