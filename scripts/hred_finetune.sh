@@ -3,7 +3,7 @@ python ../parlai/scripts/train_model.py \
     --model hred \
     --init-model ../../checkpoint/hred/pretrain/model \
     --model-file ../../checkpoint/hred/joint-fine-tuning/model \
-    --batchsize 32 \
+    --batchsize 16 \
     --validation-metric loss \
     --skip-generation True \
     --validation-every-n-epochs 0.25 \

@@ -3,7 +3,7 @@ python ../parlai/scripts/train_model.py \
     --model transformer/generator \
     --init-model ../../checkpoint/transformer/pretrain/model \
     --model-file ../../checkpoint/transformer/joint-fine-tuning/model \
-    --batchsize 32 \
+    --batchsize 16 \
     --validation-metric loss \
     --skip-generation True \
     --validation-every-n-epochs 0.25 \

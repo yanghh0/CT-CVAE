@@ -3,7 +3,7 @@ python ../parlai/scripts/eval_model.py \
     --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,personachat \
     --model seq2seq \
     --model-file ../../checkpoint/seq2seq/joint-fine-tuning/model \
-    --batchsize 32 \
+    --batchsize 16 \
     --skip-generation False \
     --inference beam \
     --beam-size 10 \

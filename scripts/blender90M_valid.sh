@@ -2,7 +2,7 @@ python ../parlai/scripts/eval_model.py \
     --datatype valid \
     --task dailydialog \
     --model-file ../../checkpoint/blender90M/pretrain/model \
-    --batchsize 32 \
+    --batchsize 16 \
     --inference beam \
     --beam-size 10 \
     --beam-min-length 1 \

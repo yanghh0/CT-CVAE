@@ -3,7 +3,7 @@ python ../parlai/scripts/train_model.py \
     --model seq2seq \
     --init-model ../../checkpoint/seq2seq/pretrain/model \
     --model-file ../../checkpoint/seq2seq/joint-fine-tuning/model \
-    --batchsize 32 \
+    --batchsize 16 \
     --validation-metric loss \
     --skip-generation True \
     --validation-every-n-epochs 0.25 \

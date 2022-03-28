@@ -3,7 +3,7 @@ python ../parlai/scripts/eval_model.py \
     --task dailydialog \
     --model hred \
     --model-file ../../checkpoint/hred/joint-fine-tuning/model \
-    --batchsize 32 \
+    --batchsize 16 \
     --skip-generation False \
     --inference beam \
     --beam-size 10 \
