@@ -1,5 +1,5 @@
 python ../parlai/scripts/train_model.py \
-    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2 \
+    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2,cornell_movie \
     --model hred \
     --init-model ../../checkpoint/hred/pretrain/model \
     --model-file ../../checkpoint/hred/joint-fine-tuning/model \
