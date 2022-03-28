@@ -1,5 +1,5 @@
 python ../parlai/scripts/train_model.py \
-    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2,cornell_movie \
+    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2 \
     --model ctcvae \
     --model-file ../../checkpoint/ctcvae/joint-fine-tuning/model \
     --batchsize 16 \
