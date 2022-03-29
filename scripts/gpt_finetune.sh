@@ -1,0 +1,17 @@
+parlai train_model \
+    --model hugging_face/gpt2 \
+    --add-special-tokens True \
+    --add-start-token True \
+    --gpt2-size small \
+    --skip-generation True \
+    --task empathetic_dialogues \
+    --batchsize 16 \
+    --validation-metric loss \
+    --dict-tokenizer gpt2 \
+    --learningrate 5e-5 \
+    --optimizer adamax \
+    --model_file ../../checkpoint/gpt2/joint-fine-tuning/model \
+    --text-truncate 360 \
+    --label-truncate 72 \
+    --fp16 true \
+    --validation-every-n-epochs 0.25
