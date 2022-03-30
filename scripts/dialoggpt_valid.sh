@@ -1,0 +1,14 @@
+python ../parlai/scripts/eval_model.py \
+    --datatype valid \
+    --model hugging_face/dialogpt \
+    --task empathetic_dialogues \
+    --model-file ../../checkpoint/dialogpt/empathetic_dialogues/model \
+    --skip-generation False \
+    --batchsize 16 \
+    --inference beam \
+    --beam-size 10 \
+    --beam-min-length 1 \
+    --beam-length-penalty 0.65 \
+    --beam-block-ngram 3 \
+    --beam-context-block-ngram 3 \
+    --metrics ppl,bleu,distinct
