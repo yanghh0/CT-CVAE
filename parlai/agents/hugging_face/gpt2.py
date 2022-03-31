@@ -553,8 +553,8 @@ class GPT2Decoder(torch.nn.Module):
 
     def __init__(self, opt, dict):
         super().__init__()
-        config = GPT2Config.from_pretrained('gpt2')
-        self.transformer = GPT2Model.from_pretrained('gpt2', config=config)
+        config = GPT2Config.from_pretrained('microsoft/DialoGPT-small')
+        self.transformer = GPT2Model.from_pretrained('microsoft/DialoGPT-small', config=config)
 
         # add special tokens
         if opt["add_special_tokens"]:
