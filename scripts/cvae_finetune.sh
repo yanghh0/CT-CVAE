@@ -1,13 +1,14 @@
 python ../parlai/scripts/train_model.py \
-    --task reddit \
+    --task dailydialog \
     --model cvae \
-    --model-file ../../checkpoint/cvae/pretrain/model \
-    --batchsize 128 \
+    --init-model /hy-tmp/cvae/pretrain/model \
+    --model-file /hy-tmp/cvae/dailydialog/model \
+    --batchsize 16 \
     --validation-metric loss \
     --skip-generation True \
-    --validation-every-n-epochs 1 \
+    --validation-every-n-epochs 0.25 \
     --optimizer adamax \
-    --learningrate 3e-4 \
+    --learningrate 1e-4 \
     --dict-tokenizer bpe \
     --dict-lower True \
     --embedding-type glove \
@@ -17,6 +18,4 @@ python ../parlai/scripts/train_model.py \
     --text-truncate 360 \
     --label-truncate 72 \
     --person-tokens True \
-    --num-epochs 15 \
-    --validation-patience 1
-
+    --validation-patience 10

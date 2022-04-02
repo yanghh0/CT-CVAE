@@ -1,12 +1,11 @@
 python ../parlai/scripts/train_model.py \
-    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2 \
-    --model transformer/generator \
-    --init-model ../../checkpoint/transformer/pretrain/model \
-    --model-file ../../checkpoint/transformer/joint-fine-tuning/model \
-    --batchsize 16 \
+    --task reddit \
+    --model ctcvae \
+    --model-file ../../checkpoint/ctcvae/pretrain/model \
+    --batchsize 128 \
     --validation-metric loss \
     --skip-generation True \
-    --validation-every-n-epochs 0.25 \
+    --validation-every-n-epochs 1 \
     --optimizer adamax \
     --learningrate 1e-4 \
     --dict-tokenizer bpe \
@@ -22,4 +21,9 @@ python ../parlai/scripts/train_model.py \
     --text-truncate 360 \
     --label-truncate 72 \
     --person-tokens True \
-    --validation-patience 10
+    --num-epochs 15 \
+    --validation-patience 10 \
+    --element D+ \
+    --regular False \
+    --modulate True \
+    --latentsize 64

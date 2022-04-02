@@ -242,11 +242,11 @@ class TransformerDecoder(nn.Module):
             raise ValueError("Can't handle --variant {}".format(self.variant))
 
         # create the positional embeddings
-        self.position_embeddings = nn.Embedding(self.n_positions, self.embedding_size)
+        self.position_embeddings = nn.Embedding(self.n_positions, self.d_model)
         if not opt.get('learn_positional_embeddings', False):
             create_position_codes(
                 self.n_positions,
-                self.embedding_size,
+                self.d_model,
                 out=self.position_embeddings.weight,
             )
         else:
@@ -272,6 +272,7 @@ class TransformerDecoder(nn.Module):
 
         self.o2e = nn.Linear(self.d_model, self.embedding_size, bias=True)
         self.input_layer = nn.Linear(self.embedding_size, self.d_model, bias=False)
+        self._dropout = nn.Dropout(p=0.1)
         nn.init.xavier_normal_(self.input_layer.weight)
 
     def forward_embedding(
@@ -294,6 +295,7 @@ class TransformerDecoder(nn.Module):
             embeded input and mask
         """
         tensor = self.embeddings(input)
+        tensor = self.input_layer(tensor)
         if self.embeddings_scale:
             tensor = tensor * np.sqrt(self.dim)
         if self.variant == 'xlm':
@@ -384,7 +386,6 @@ class TransformerDecoder(nn.Module):
             incr_state = {}
 
         tensor = self.forward_embedding(input, positions)
-        tensor = self.input_layer(tensor)
 
         tensor = self.dropout(tensor)  # --dropout
 
@@ -395,7 +396,7 @@ class TransformerDecoder(nn.Module):
         if self.variant == 'prelayernorm':
             tensor = self.norm_embeddings(tensor)
 
-        tensor = self.o2e(tensor)
+        tensor = self._dropout(self.o2e(tensor))
 
         return tensor, new_incr_state
 

@@ -175,11 +175,11 @@ class TransformerEncoder(nn.Module):
             nn.init.normal_(self.embeddings.weight, 0, self.embedding_size ** -0.5)
 
         # create the positional embeddings
-        self.position_embeddings = nn.Embedding(self.n_positions, self.embedding_size)
+        self.position_embeddings = nn.Embedding(self.n_positions, self.d_model)
         if not opt.get('learn_positional_embeddings', False):
             create_position_codes(
                 self.n_positions,
-                self.embedding_size,
+                self.d_model,
                 out=self.position_embeddings.weight,
             )
         else:
@@ -245,6 +245,7 @@ class TransformerEncoder(nn.Module):
         if positions is None:
             positions = (mask.cumsum(dim=1, dtype=torch.int64) - 1).clamp_(min=0)
         tensor = self.embeddings(input)
+        tensor = self.input_layer(tensor)
         if self.embeddings_scale:
             tensor = tensor * np.sqrt(self.dim)
 
@@ -342,8 +343,6 @@ class TransformerEncoder(nn.Module):
         if self.variant == 'xlm' or self.variant == 'bart':
             tensor = self.norm_embeddings(tensor)
 
-        tensor = self.input_layer(tensor)
-
         # --dropout on the embeddings
         tensor = self.dropout(tensor)
 
@@ -377,183 +376,3 @@ class TransformerEncoder(nn.Module):
 
         tensor_out, mask_out = PipelineHelper.join(chunks)
         return tensor_out
-
-
-@swappable(layer=TransformerEncoderLayer)
-class sTransformerEncoder(nn.Module):
-    def __init__(
-        self,
-        opt: Opt,
-        vocabulary_size: int,
-        embedding: Optional[nn.Embedding] = None,
-        padding_idx: int = 0,
-        reduction_type: str = 'mean',
-        n_positions: Optional[int] = None,
-        n_segments: Optional[int] = None,
-        embeddings_scale: Optional[bool] = None,
-        dropout: Optional[float] = None,
-        activation: Optional[str] = None,
-        variant: Optional[str] = None,
-        output_scaling: Optional[float] = None,
-        **kwargs,
-    ):
-        super().__init__(**kwargs)
-
-        def _default(val, default):
-            return val if val is not None else default
-
-        self.opt = opt
-        self.embedding_size = opt['embedding_size']
-        self.ffn_size = opt['ffn_size']
-        self.n_layers = (
-            opt['n_encoder_layers']
-            if opt.get('n_encoder_layers', -1) > 0
-            else opt['n_layers']
-        )
-        self.n_heads = opt['n_heads']
-        self.dim = self.embedding_size
-        self.embeddings_scale = _default(
-            embeddings_scale, opt.get('embeddings_scale', False)
-        )
-        self.reduction_type = reduction_type
-        self.padding_idx = padding_idx
-        # this is --dropout, not --relu-dropout or --attention-dropout
-        self.dropout_frac = _default(dropout, opt.get('dropout', 0.0))
-        self.dropout = nn.Dropout(p=self.dropout_frac)
-        self.variant = _default(variant, opt.get('variant', 'aiayn'))
-        self.n_segments = _default(n_segments, opt.get('n_segments', 0))
-
-        self.n_positions = _default(n_positions, get_n_positions_from_options(opt))
-        self.out_dim = self.embedding_size
-        assert (
-            self.embedding_size % self.n_heads == 0
-        ), 'Transformer embedding size must be a multiple of n_heads'
-
-        # create the positional embeddings
-        self.position_embeddings = nn.Embedding(self.n_positions, self.embedding_size)
-        if not opt.get('learn_positional_embeddings', False):
-            create_position_codes(
-                self.n_positions,
-                self.embedding_size,
-                out=self.position_embeddings.weight,
-            )
-        else:
-            nn.init.normal_(
-                self.position_embeddings.weight, 0, self.embedding_size ** -0.5
-            )
-
-        if self.n_segments >= 1:
-            self.segment_embeddings = nn.Embedding(self.n_segments, self.dim)
-
-        # build the model
-        self.layers = nn.ModuleList()
-        for _ in range(self.n_layers):
-            self.layers.append(
-                self.swappables.layer(  # type: ignore
-                    self.n_heads,
-                    self.embedding_size,
-                    self.ffn_size,
-                    attention_dropout=opt.get('attention_dropout', 0.0),
-                    relu_dropout=opt.get('relu_dropout', 0.0),
-                    dropout=self.dropout_frac,
-                    variant=self.variant,
-                    activation=_default(activation, opt.get('activation', 'relu')),
-                )
-            )
-        self.output_scaling = _default(output_scaling, opt.get('output_scaling', 1.0))
-
-    def forward_embedding(
-        self,
-        input: torch.FloatTensor,
-        positions: Optional[torch.LongTensor] = None,
-        segments: Optional[torch.LongTensor] = None,
-    ) -> Tuple[torch.Tensor, torch.BoolTensor]:
-        """
-        Embed tokens prior to feeding into transformer.
-
-        :param LongTensor[batch,seqlen] input:
-            The input IDs
-        :param LongTensor[batch,seqlen] positions:
-            Positions for input IDs
-        :param LongTensor[batch,seqlen]:
-            If provided, additionally adds ``segments`` as extra embedding features.
-
-        :return (tensor, mask):
-            return embedded input and mask
-        """
-        bsz = input.size(0)
-        time = input.size(1)
-        mask = input.new(bsz, time).fill_(1)
-
-        if positions is None:
-            positions = (mask.cumsum(dim=1, dtype=torch.int64) - 1).clamp_(min=0)
-        tensor = input
-
-        if positions.max().item() > self.n_positions:
-            warn_once(
-                'You are inputting a sequence of {x} length, but only have '
-                '--n-positions {y}. Set --truncate or increase --n-positions'.format(
-                    x=positions.max().item(), y=self.n_positions
-                )
-            )
-        position_embs = self.position_embeddings(positions).expand_as(tensor)
-        tensor = tensor + position_embs
-
-        if self.n_segments >= 1:
-            if segments is None:
-                segments = torch.zeros_like(input)  # type: ignore
-            tensor = tensor + self.segment_embeddings(segments)
-
-        return tensor, mask
-
-    def forward_layers(
-        self, tensor: torch.Tensor, mask: torch.BoolTensor
-    ) -> torch.Tensor:
-        """
-        Apply transformer layers to input.
-
-        :param tensor:
-            embedded input
-        :param mask:
-            mask of input
-
-        :return tensor:
-            return embedding after applying transformer layers
-        """
-        for i in range(self.n_layers):
-            tensor = self.layers[i](tensor, mask)
-
-        return tensor
-
-    def forward(  # type: ignore
-        self,
-        input: torch.LongTensor,
-        positions: Optional[torch.LongTensor] = None,
-        segments: Optional[torch.LongTensor] = None,
-        **kwargs,
-    ) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.BoolTensor]]:
-        """
-        Forward pass.
-
-        :param LongTensor[batch,seqlen] input:
-            The input IDs
-        :param LongTensor[batch,seqlen] positions:
-            Positions for input IDs
-        :param LongTensor[batch,seqlen] segments:
-            If provided, additionally adds ``segments`` as extra embedding features.
-        """
-        # embed input
-        tensor, mask = self.forward_embedding(input, positions, segments)
-
-        # --dropout on the embeddings
-        tensor = self.dropout(tensor)
-
-        tensor *= mask.unsqueeze(-1).type_as(tensor)
-
-        # apply transformer layers
-        tensor = self.forward_layers(tensor, mask)
-
-        if self.variant == 'prelayernorm':
-            tensor = self.norm_embeddings(tensor)
-
-        return tensor

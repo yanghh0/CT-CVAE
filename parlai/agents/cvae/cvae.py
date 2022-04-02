@@ -40,7 +40,7 @@ class CvaeAgent(TorchGeneratorAgent):
             "-lsz",
             "--latentsize",
             type=int,
-            default=128,
+            default=64,
             help="size of the latent size",
         )
         agent.add_argument(
@@ -209,9 +209,9 @@ class CvaeAgent(TorchGeneratorAgent):
 
         if self.opt['datatype'] == 'train' and not return_output:
             self.global_t += 1
-            kl_weights = min(self.global_t * 1.0 / self.full_kl_step, 1.0)
+            kl_weights = min(self.global_t * 1.0 / self.full_kl_step, 1.2)
         else:
-            kl_weights = 1.0
+            kl_weights = 1.2
 
         # cross entropy loss
         self.record_local_metric('rc_loss', AverageMetric.many(rc_loss, target_tokens))
