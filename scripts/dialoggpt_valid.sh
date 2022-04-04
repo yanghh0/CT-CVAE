@@ -1,6 +1,6 @@
 python ../parlai/scripts/eval_model.py \
     --datatype valid \
-    --model hugging_face/dialogpt \
+    --model hugging_face/gpt2 \
     --task empathetic_dialogues \
     --model-file ../../checkpoint/dialogpt/empathetic_dialogues/model \
     --skip-generation False \

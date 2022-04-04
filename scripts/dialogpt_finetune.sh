@@ -1,5 +1,5 @@
 parlai train_model \
-    --model hugging_face/dialogpt \
+    --model hugging_face/gpt2 \
     --add-special-tokens True \
     --add-start-token True \
     --gpt2-size small \
