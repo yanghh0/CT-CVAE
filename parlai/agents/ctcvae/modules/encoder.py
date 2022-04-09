@@ -160,7 +160,7 @@ class TransformerEncoderLayer(nn.Module):
         tensor *= mask.unsqueeze(-1).type_as(tensor)
         return tensor
 
-attention_head_num = 4
+attention_head_num = 2
 
 @swappable(
     layer=TransformerEncoderLayer,

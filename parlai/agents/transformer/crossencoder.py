@@ -32,7 +32,12 @@ class CrossencoderAgent(TorchRankerAgent):
         return parser
 
     def build_model(self, states=None):
-        return CrossEncoderModule(self.opt, self.dict, self.NULL_IDX)
+        model = CrossEncoderModule(self.opt, self.dict, self.NULL_IDX)
+        if self.opt['embedding_type'] != 'random':
+            self._copy_embeddings(
+                model.encoder.embeddings.weight, self.opt['embedding_type']
+            )
+        return model
 
     def vectorize(self, *args, **kwargs):
         """

@@ -207,18 +207,23 @@ class CtcvaeAgent(TorchGeneratorAgent):
         self.max_freq = list(self.dict.freq.values())[5]
         self.min_freq = list(self.dict.freq.values())[-1]
 
+        self.match_1 = 0
+        self.total_1 = 0
+        self.match_2 = 0
+        self.total_2 = 0
+
         model = CtcvaeModel(self.opt, self.dict)
         self.flag = 'parallel'  # parallel or single
 
         if self.opt["element"] == "D+" and self.opt['datatype'] != 'train':
             import parlai.utils.pickle
 
-            with PathManager.open("/root/yanghh/checkpoint/crossencoder/empathetic_dialogues/model", 'rb') as f:
+            with PathManager.open("/hy-tmp/crossencoder/model", 'rb') as f:
                 states = torch.load(
                     f, map_location=lambda cpu, _: cpu, pickle_module=parlai.utils.pickle
                 )
 
-            self.crossencoder_opt = Opt.load("/root/yanghh/checkpoint/crossencoder/empathetic_dialogues/model.opt")
+            self.crossencoder_opt = Opt.load("/hy-tmp/crossencoder/model/model.opt")
             self.crossencoder = CrossEncoderModule(self.crossencoder_opt, self.dict, self.NULL_IDX)
             self.crossencoder.load_state_dict(states['model'])
             self.crossencoder.cuda()
@@ -344,11 +349,42 @@ class CtcvaeAgent(TorchGeneratorAgent):
                 symbol_labels.append(Symbol_dict["other"])
         return symbol_labels, symbol_labels
 
+    def _gen_symbol_category(self, text, obs_batch=None):
+        symbol_labels = []
+        for label in text:
+            if self.dict["?"] in label:
+                symbol_labels.append(Symbol_dict["?"])
+            else:
+                symbol_labels.append(Symbol_dict["other"])
+        return symbol_labels
+
     def gen_specificity_category(self, batch, obs_batch):
         specificity_labels = []
         for label in batch.label_vec:
             total = 0.0
             for tok_id in label.numpy().tolist():
+                if tok_id in (0, 1, 2, 3, 4):
+                    continue
+                total += 1 - ((self.dict.freq[self.dict[tok_id]] - self.min_freq) * 1.0 / (self.max_freq - self.min_freq))
+            total = int(total) + 1
+            if total > 30:
+                key = 'other'
+            elif total % 6 == 0:
+                left = total - 5
+                right = total
+                key = str(left) + '-' + str(right)
+            else:
+                left = total // 6 * 6 + 1
+                right = (total + 6) // 6 * 6
+                key = str(left) + '-' + str(right)
+            specificity_labels.append(Specific_dict[key])
+        return specificity_labels
+
+    def _gen_specificity_category(self, text_id_list, obs_batch=None):
+        specificity_labels = []
+        for label in text_id_list:
+            total = 0.0
+            for tok_id in label:
                 if tok_id in (0, 1, 2, 3, 4):
                     continue
                 total += 1 - ((self.dict.freq[self.dict[tok_id]] - self.min_freq) * 1.0 / (self.max_freq - self.min_freq))
@@ -563,43 +599,18 @@ class CtcvaeAgent(TorchGeneratorAgent):
 
         text = [self._v2t(p) for p in preds] if preds is not None else None
 
-        if self.opt['datatype'] == 'valid':
-            from parlai.utils.misc import msg_to_str
-            act = {
-                'text': '',
-                'labels': [''],
-                'cond1': '',
-                'cond2': '',
-                'episode_done': True,
-            }
+        if text:
+            y1 = torch.LongTensor(self._gen_specificity_category(preds)).cuda()
+            y2 = torch.LongTensor(self._gen_symbol_category(preds)).cuda()
 
-            label_str_list = [self._v2t(p) for p in batch.label_vec] if batch.label_vec is not None else None
-            pred_str_list = text
-
-            for pred_str in pred_str_list:
-                pred_str_length = len(pred_str.split())
-                self.total_length += pred_str_length
-                self.total_sentence += 1
-                if pred_str_length > self.max_length:
-                    self.max_length = pred_str_length
-                if pred_str_length < self.min_length:
-                    self.min_length = pred_str_length
-                try:
-                    self._length[pred_str_length] += 1
-                except Exception as e:
-                    print(pred_str)
-
-            print(self.total_length * 1.0 / self.total_sentence)
-            print(self.total_length, self.total_sentence, self.max_length, self.min_length)
-            print(self._length)
-
-            with open("semantic_evaluation.txt", "a") as fs:
-                for cnt, label_str in enumerate(label_str_list):
-                    act['text'] = label_str
-                    act['labels'] = [pred_str_list[cnt]]
-                    txt = msg_to_str(act)
-                    fs.write(txt + '\n')
-                    fs.write('\n')
+            self.match_1 += (y1 == batch.class_labels_specificity).sum()
+            self.match_2 += (y2 == batch.class_labels_symbol).sum()
+            self.total_1 += len(text)
+            self.total_2 += len(text)
+            #print(y)
+            #print(batch.class_labels.data)
+            print(self.match_1, self.total_1, self.match_1.item() / self.total_1)
+            print(self.match_2, self.total_2, self.match_2.item() / self.total_2)
 
         if text and self.compute_tokenized_bleu:
             # compute additional bleu scores
@@ -680,7 +691,10 @@ class CtcvaeAgent(TorchGeneratorAgent):
                 scores = scores.squeeze(1)
 
                 out, idx = torch.topk(scores, k=2, dim=0)
-                select_condition = torch.max(idx).item()
+                if out[0].item() - out[1].item() > 1.0:
+                    select_condition = idx[0].item()
+                else:
+                    select_condition = torch.max(idx).item()
 
                 beam_preds_scores = [_beam_preds_scores[select_condition]]
                 preds = (_preds[select_condition], )
