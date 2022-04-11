@@ -244,7 +244,7 @@ class TransformerEncoder(nn.Module):
         codes = torch.nn.init.uniform_(codes)
         self.codes = torch.nn.Parameter(codes)
         self.w_encoder_attention = self.swappables.encoder_attention(
-            self.n_heads, self.d_model, dropout=0.0
+            self.n_heads, self.d_model, dropout=0.1
         )
         self._linear_layer = nn.Linear(self.d_model * attention_head_num, self.d_model)
         nn.init.xavier_normal_(self._linear_layer.weight)
