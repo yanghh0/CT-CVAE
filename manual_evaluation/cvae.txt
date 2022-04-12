@@ -4,7 +4,7 @@ text:
 	b. as a reporter , he must have acute insight and language skills . at the same time , he must have good judgment , the respect for his job and tactical cooperation with others .
 	a. can you work under pressure ? you know , people working here are all busy everyday since we ' re daily newspaper .	
 labels:
-	yes , i can . 
+	well , there ' s a lot of information on my job . i can meet all the requirements for my job , but i ' m in high school .
 	==GT: i think i ' ve got used to work under pressure . i will adjust myself to the step of your newspaper quickly .
 
 2.
@@ -13,7 +13,7 @@ text:
 	b. certainly . may i see your social security and your id , please .
 	a. here you are . i wonder how much interest can i earn from a current account .	
 labels:
-	well , i don ' t think so . 
+	once a month , you have to fill out a deposit in your account .
 	==GT: oh , current accounts don ' t pay out interest .
 
 3.
@@ -22,7 +22,7 @@ text:
 	b. there is one . 5 blocks away from here ?
 	a. well , that ' s too far . can you change some money for me ?	
 labels:
-	how much is it ? 
+	sure . here you are .
 	==GT: surely , of course . what kind of currency have you got ?
 
 4.
@@ -31,7 +31,7 @@ text:
 	b. i am just waiting for my friends . it won ' t be long .
 	a. sir , the curb here is not for parking .	
 labels:
-	oh , i am so sorry . 
+	it ' s the most important thing for me .
 	==GT: but i didn ' t see the sign , ma ' am .
 
 5.
@@ -40,7 +40,7 @@ text:
 	b. yes , i am . i always make a plan before i do anything .
 	a. where do you want to be in 5 years ?	
 labels:
-	i ' d like to be a stay at home mom . 
+	in one direction .
 	==GT: i don ' t want to have a specific title . i just want to enjoy what i am doing .
 
 6.
@@ -49,7 +49,7 @@ text:
 	b. that ' s fine . you must try this dish . 
 	a. could you tell me how this thing is cooked ?	
 labels:
-	yes , of course . 
+	it depends on the taste of the dish . there is a variety of dishes in the kitchen . if you can ' t find a dish or a dish in the oven , it will be very popular .
 	==GT: it ' s fish steamed and served with our special sauce .
 
 7.
@@ -58,7 +58,7 @@ text:
 	b. good morning , steven .
 	a. so , what ' s the status of our advertising campaign ?	
 labels:
-	i ' m not sure . 
+	how many years have i been able to do that ? our company is responsible for all our products .
 	==GT: it ' ll be a national campaign starting next week .
 
 8.
@@ -67,7 +67,7 @@ text:
 	b. where will you go , sir ?
 	a. friendship hotel .	
 labels:
-	that ' s right , sir . 
+	i ' m sorry , sir . have you got an emergency service ?
 	==GT: ok , it ' s not far from here .
 
 9.
@@ -76,7 +76,7 @@ text:
 	b. of course not . i ' m just observing casual day . on fridays , the company doesn ' t require us to wear formal business attire . 
 	a. wow ! nobody told me about that . won ' t the relaxed dress code damage the company image ?	
 labels:
-	i don ' t think so . 
+	that ' s true . it ' s just so cool that they wear leather shirts .
 	==GT: we don ' t think so . casual days are becoming more common , and we believe employees can maintain a professional image without wearing uncomfortable clothes .
 
 10.
@@ -85,7 +85,7 @@ text:
 	b. including my keys ?
 	a. yes , and please step over there .	
 labels:
-	thank you very much . 
+	how much is it ?
 	==GT: all right . what shall i do now ?
 
 #==================================================================================================
@@ -96,7 +96,7 @@ text:
 	b. i stayed home because i wasn ' t feeling well .
 	a. what was your problem ?	
 labels:
-	i had a terrible headache . 
+	i did something wrong .
 	==GT: my stomach was bothering me .
 
 12.
@@ -105,7 +105,7 @@ text:
 	b. i don ' t have a girlfriend . i ' m single .
 	a. oh , that ' s right . well , there are going to be many beautiful girls at the party tonight , anyway .	
 labels:
-	what are you going to do ? 
+	well . . . i feel like i am too scared to come in .
 	==GT: no , i like being single . i never thought lonely , i ' m focus on my career . maybe i ' ll start to look for my girl when i achieve success .
 
 13.
@@ -114,7 +114,7 @@ text:
 	b. i ' m sorry . these batteries are not on sale . 
 	a. but that ' s what the ad said .	
 labels:
-	what ad did you say ? 
+	that doesn ' t surprise me .
 	==GT: i ' m sorry . if you look at the ad again , you ' ll see that the other brand is on sale .
 
 14.
@@ -123,7 +123,7 @@ text:
 	b. i ' d like extra prints made of these photos .
 	c. do you have your negatives ?	
 labels:
-	yes , here they are . 
+	of course . do you like the website ?
 	==GT: yes . here they are . i ' ve marked how many prints i want on each shot .
 
 15.
@@ -132,7 +132,7 @@ text:
 	b. i ' m interested in taking a tour to sydney .
 	a. well , we have a package tour there .	
 labels:
-	how long is the tour ? 
+	that ' s so kind of you .
 	==GT: how much does it cost ?
 
 16.
@@ -141,7 +141,7 @@ text:
 	b. no , the steak was recommended , but it is not very fresh .
 	a. oh , sorry to hear that . this is quite unusual . i will look into the matter .	
 labels:
-	thank you . 
+	so what should i get in the cut ?
 	==GT: this is very annoying .
 
 17.
@@ -150,7 +150,7 @@ text:
 	b. no , i ' m mary .
 	a. oh , are you in class four ?	
 labels:
-	i don ' t think so . 
+	yes , i am very busy today
 	==GT: no , i ' m in class there .
 
 18.
@@ -159,7 +159,7 @@ text:
 	b. what ' s going on ?
 	a. look . two cars are standing right in the middle of the road and the drivers are shouting rude words to each other . that ' s why that car stops .	
 labels:
-	what do you mean ? 
+	excuse me ? 
 	==GT: more and more people easily get irritated while driving .
 
 19.
@@ -168,7 +168,7 @@ text:
 	b. i couldn ' t sleep well recently .
 	a. you ' d get plenty of sleep for you work so hard .	
 labels:
-	i guess so . 
+	i know .
 	==GT: i always drink too much wine in the evening .
 
 20.
@@ -177,7 +177,7 @@ text:
 	b. great . are you a qualified teacher ?
 	a. yes .	
 labels:
-	how long have you been a teacher ? 
+	that ' s great . do you have an open field ?
 	==GT: what kind of teaching certificate do you have ?
 
 #==================================================================================================
@@ -188,7 +188,7 @@ text:
 	b. working hours are from 8 : 30 a . m . to 5 : 00 p . m . be sure not to be late or absent . report to the manager by filling in the ' monthly report ' every month .
 	a. is there anything else ? how about my salary ?	
 labels:
-	yes , that ' s all . 
+	yes , that ' s quite a bonus . what do you have to pay for ?
 	==GT: our company has a strict and reasonable salary standard . on the 20th day of every month , you can get your salary on time . benefits depend upon the length of service and the employee ' s past attendance record .
 
 22.
@@ -197,7 +197,7 @@ text:
 	b. yes . can i help you ?
 	a. do you remember me ? i just had lunch here a half hour ago .	
 labels:
-	what did you have ? 
+	i ' m sorry to hear that . but you ' re right . we ' re sitting here waiting for dinner right now . could you come back later ?
 	==GT: of course i remember you .
 
 23.
@@ -206,7 +206,7 @@ text:
 	b. take me to the airport , please .
 	a. are you in a hurry ?	
 labels:
-	no , i ' m not . 
+	no , i ' m going to be busy in the afternoon .
 	==GT: i have to be there before 17 o ' clock .	
 
 24.
@@ -215,7 +215,7 @@ text:
 	b. sorry , but he is out for lunch right now .
 	a. i see . can you give me some idea how long he ' ll be back ?	
 labels:
-	i ' m not sure . 
+	we ' ll just wait a minute . would you please stop talking to him ?
 	==GT: i think he will be back around 2 : 00 . if you like , please leave your name and phone number , i ' ll have him call you as soon as he comes back .
 
 25.
@@ -224,7 +224,7 @@ text:
 	b. oh , you are out of breath ! what happened ?
 	a. some people are wildly shooting on the next street . we must leave here as soon as possible !	
 labels:
-	i hope so ! 
+	is it just for you ?
 	==GT: take it easy . they will get caught .
 
 26.
@@ -233,7 +233,7 @@ text:
 	b. what can i do for you ?
 	a. i ' ve just heard an announcement that my flight has been delayed .	
 labels:
-	what ' s the delay ?
+	i see . how did you get it ?
 	==GT: what ' s your flight number ?
 
 27.
@@ -242,7 +242,7 @@ text:
 	b. i ' d like the double cheese burger meal , please .
 	a. what kind of drink would you like with that ?	
 labels:
-	what ' s the difference ? 
+	-
 	==GT: just coke will be fine .
 
 28.
@@ -251,7 +251,7 @@ text:
 	b. yeah , i accidentally dropped my phone in the toilet . 
 	a. i see . well , you have come to the right place . we have over one hundred models of more than twenty leading mobile phone manufacturers .	
 labels:
-	what ' s the difference ? 
+	what does it mean ?
 	==GT: sounds good . i don ' t want it to be too expensive , maybe something mid - range .
 
 29.
@@ -260,7 +260,7 @@ text:
 	b. university street . 
 	a. do you know of any banks near here ?	
 labels:
-	no , i don ' t . 
+	-
 	==GT: you ' ll see one at the corner on your right .
 
 30.
@@ -269,7 +269,7 @@ text:
 	b. i ' m glad to hear that .
 	a. how much are you asking ?	
 labels:
-	300 yuan . 
+	you can rent an apartment .
 	==GT: you will have to pay $ 1050 every month .
 
 #==================================================================================================
@@ -280,7 +280,7 @@ text:
 	b. do you have a hotel card or something ?
 	a. let ' s see . yes , i have the address and telephone number here .	
 labels:
-	ok , i ' ll take it . 
+	that is fine . we can have a credit card with you .
 	==GT: oh , you ' re staying at the downtown hilton . then , you go down two blocks this way and turn left . you ' ll find it on the right .
 
 32.
@@ -289,7 +289,7 @@ text:
 	b. generally speaking , he needs creativity , the ability to communicate , sense of personal responsibilities , the ability to solve problems and so on .
 	a. do you have all these qualities ?	
 labels:
-	yes , i do . 
+	yes , of course . most of the time , i have a lot of friends in our country . i want to be an english teacher , but all of my friends are very important .
 	==GT: yes , i have all of them . i am totally competent to be a senior executive .
 
 33.
@@ -298,7 +298,7 @@ text:
 	b. yes . we ' re interested in seeing the rooms for rent .
 	a. oh , how nice . they ' re bright rooms and the house is very quiet .	
 labels:
-	how much is the rent ? 
+	it seems that we just have rooms and rooms . how about you ?
 	==GT: a nice quiet house is exactly what we ' re looking for .
 
 34.
@@ -307,7 +307,7 @@ text:
 	b. well . . . uh . . . how about a glass of juice instead ?  
 	a. no . i ' d like tea . can you put it in my favorite cup ? you probably washed it . . .	
 labels:
-	sure . what ' s up ? 
+	sure . don ' t get a cold .
 	==GT: oh , yeah . well , uh , about your mug . . .	
 
 35.
@@ -316,7 +316,7 @@ text:
 	b. it ' s almost ready . can you set the table ?
 	a. all right .	
 labels:
-	what ' s your table number ? 
+	-
 	==GT: want to taste this dish ?
 
 36.
@@ -325,7 +325,7 @@ text:
 	b. no , i ' m afraid we don ' t .
 	a. i ' m sorry the restaurant is full now . you have to wait for about half an hour . would you like to have a drink at the lounge until there ' s a table available .	
 labels:
-	thank you very much . 
+	sorry , sir . i can ' t have that room .
 	==GT: no , thanks , i ' ll come back later . may i reserve a table for two ?
 
 37.
@@ -334,7 +334,7 @@ text:
 	b. you really should go to rachel ' s pet store .
 	a. why ? anything special there ?	
 labels:
-	it ' s a special one . 
+	it sounds like a lot of pets . you should check them out .
 	==GT: it ' s more than special . you can find as many kinds of animals as you can put a name to and more .
 
 38.
@@ -343,7 +343,7 @@ text:
 	b. i am proud to know that he is our president .
 	a. you voted for him , right ?	
 labels:
-	i did vote for him . 
+	of course , i don ' t know how many people are aware of him .
 	==GT: did you vote for him , because i know that i did .
 
 39.
@@ -352,7 +352,7 @@ text:
 	b. yes , of course . there are many tea houses and bars in china , too . people can drink , eat and relax at these places .
 	a. you like to go to these places , don ' t you ?	
 labels:
-	yes . 
+	-
 	==GT: yes , sometimes the music there is so beautiful . it is very romantic . i can stay there for hours .
 
 40.
@@ -361,7 +361,7 @@ text:
 	b. we ' d like to order breakfast for tomorrow morning .
 	a. yes , sir . what would you like ?	
 labels:
-	how much is it ? 
+	-
 	==GT: orange juice , scrambled eggs , bacon , toast and coffee .
 
 #==================================================================================================
@@ -372,7 +372,7 @@ text:
 	b. no , i ' m not .
 	a. what are you going to do ? are you going to work late ?
 labels:
-	i don ' t know . 
+	i ' d like to go to the gym .
 	==GT: no , i ' m not . i ' m going to look for an apartment .
 
 42.
@@ -381,7 +381,7 @@ text:
 	b. thank you .
 	a. how do you keep fit ?	
 labels:
-	i keep fit . 
+	you look good .
 	==GT: i do yoga twice a weeks
 
 43.
@@ -390,7 +390,7 @@ text:
 	b. do i have to get up now ?
 	a. you ' d better get up , or you ' ll be late .	
 labels:
-	what ' s the matter ? 
+	do you know what i ' m supposed to do today ?
 	==GT: what ' re you talking about ? my alarm even hasn ' t gone off yet .
 
 44.
@@ -399,7 +399,7 @@ text:
 	b. how about the cinema ?
 	a. that ' s a good idea . we haven ' t seen a film for ages . what would you like to see ?	
 labels:
-	what about movies ? 
+	i hope that it is beautiful !
 	==GT: oh i don ' t know . titanic ?
 
 45.
@@ -408,7 +408,7 @@ text:
 	b. please show your ticket and passport .
 	a. here you are .	
 labels:
-	please fill out this form . 
+	ok , i am going to go .
 	==GT: which flight do you want to change ?
 
 46.
@@ -417,7 +417,7 @@ text:
 	b. i ' m not getting one .
 	a. why is that ?	
 labels:
-	i don ' t know . 
+	well i ' ll have to take a bus .
 	==GT: it ' s cheaper if i don ' t buy one .
 
 47.
@@ -426,7 +426,7 @@ text:
 	b. good morning . you are speaking to the property manager .
 	a. while it was raining last night , water started leaking in from the ceiling .	
 labels:
-	i am sorry to hear that . 
+	what ' s the problem ? it is very reliable and it ' s been over an hour .
 	==GT: was it leaking in the bedroom ?
 
 48.
@@ -435,7 +435,7 @@ text:
 	b. of course , that ' s my job . oh , dear . what ' s happened ?
 	a. well , it ' s eaten my card ! it won ' t give it back !	
 labels:
-	what did you get ? 
+	i see .
 	==GT: i see . . . calm down , don ' t worry . may i ask what were you doing when it took your card ?	
 
 49.
@@ -444,7 +444,7 @@ text:
 	b. i have earned 10 , 000 a year including bonuses . 
 	a. how much do you want us to pay you ?	
 labels:
-	i ' m not sure . 
+	this one , please .
 	==GT: i like to be paid more than that . hopefully , 150 , 000 a year . to be honest , i left the company to get more income .
 
 50.
@@ -453,7 +453,7 @@ text:
 	b. aisle a is where you ' ll find all the produce .
 	a. what sales do they have today ?	
 labels:
-	i ' m not sure . 
+	the house is ready to be sold .
 	==GT: i ' m sure something is on sale . please check with the produce person .
 
 #==================================================================================================
@@ -464,7 +464,7 @@ text:
 	b. hi ! no i haven ' t . i eat a lot of chocolate though
 	a. chocolate ! my downfall ! i must have ! then i must starve for days	
 labels:
-	i don ' t eat too much chocolate 
+	i ' m a guy who lives on my diet
 	==GT: how old are you ? i am 5 . some don ' t understand me , but i like to talk
 
 52.
@@ -473,7 +473,7 @@ text:
 	b. hello , my sons and i are having a father son bonding night .
 	a. how old are your sons ? i am 13 . are they my age ?	
 labels:
-	yes they are , they are my age . 
+	-
 	==GT: one of my sons is 13 and the other is 15 . do you have pets ?
 
 53.
@@ -482,7 +482,7 @@ text:
 	b. just working . keep these people quite in the library . 
 	a. oh you are a librarian ? i work in construction .	
 labels:
-	i am a librarian . what do you do in your spare time ? 
+	i do not have any kids .
 	==GT: yes i ' m . but really hoping to retire soon .
 
 54.
@@ -491,7 +491,7 @@ text:
 	b. the same . me and the cats are watching the birds .
 	a. cool ! ! coffee and bird watching sounds fun	
 labels:
-	what do you do for a living ? 
+	i like watching the tv show , it is my favorite .
 	==GT: no coffee here . doctor says no . trials of being old i guess
 
 55.
@@ -500,16 +500,16 @@ text:
 	b. it sure is , the sunrise was a lovely orange this morning .
 	a. i just got back from my morning walk and the sunrise as excellent here too .	
 labels:
-	i love the sunrise and the sun as well . 
+	i like it as well . just got done watching my favorite movie .
 	==GT: i walked to the pet store and came back with a fish .
 
 56.
 text:
 	a. i love country music , country concerts on the weekend
 	b. i love taylor swift , she ' s my favorite
-	c. my two dogs love her	
+	a. my two dogs love her	
 labels:
-	what kind of dogs do you have ? 
+	who is your favorite singer ? they ' ve been playing a lot since i was 6 .
 	==GT: do you like eating out ? i do	
 
 57.
@@ -518,7 +518,7 @@ text:
 	b. i ' m great ! just got back from a run !
 	a. do you run every day	
 labels:
-	no , i don ' t . do you ? 
+	-
 	==GT: pretty much ! i also swim and ride my bike and play soccer .
 
 58.
@@ -527,7 +527,7 @@ text:
 	b. i ' m doing great ! how about you ?
 	a. doing good went to watch my friends at the skate park today	
 labels:
-	that sounds fun ! do you have any hobbies ? 
+	that ' s interesting . i always wanted to go surfing .
 	==GT: well , that sounds like fun ! do you skate too ?
 
 59.
@@ -536,7 +536,7 @@ text:
 	b. i am from alabama . i work construction , i learned from my dad . you ?
 	a. i am from canada and i work for the army	
 labels:
-	that ' s cool . do you have any hobbies ? 
+	that is good . i enjoy learning so much .
 	==GT: what do you do in the army ?	
 
 60.
@@ -545,7 +545,7 @@ text:
 	b. hello , i am wonderful , how are you ? i am a canadian . 
 	a. i ' m good . i ' m american . i ' ve never been outside of ohio .	
 labels:
-	do you have any hobbies ? 
+	i have the highest iq in florida .
 	==GT: i ' m on the other side of lake erie .
 
 #==================================================================================================
@@ -556,7 +556,7 @@ text:
 	b. oh no ! i hope she ' s forgiven you since then . 
 	a. oh yes she has , it was a while ago now but at the time the guilt was awful . needless to say i learnt my lesson and never borrowed her clothes again !	
 labels:
-	i ' m sorry to hear that ! 
+	oh i am so sorry to hear that !
 	==GT: that ' s probably a good idea .
 
 62.
@@ -565,7 +565,7 @@ text:
 	b. im sure that is tough . you must really miss him .
 	a. yeah i have no pets or children so im just here in an empty house .	
 labels:
-	i ' m sorry to hear that . 
+	i hope you have a good rest .
 	==GT: do you get nervous being on your own ?
 
 63.
@@ -574,7 +574,7 @@ text:
 	b. why not ? what happens tomorrow ?
 	a. i have to talk to a large group at work tomorrow .	
 labels:
-	that ' s a good idea . 
+	i see . 
 	==GT: don ' t let it worry you too much . just make sure you organize everything you need to present and remember to speak loudly and clearly ! you can do it !
 
 64.
@@ -583,7 +583,7 @@ text:
 	b. what did he do ?
 	a. he got caught cheating by his teacher on a test the other day .	
 labels:
-	that ' s too bad . 
+	i can ' t wait for that .
 	==GT: oh no . what do you think caused him to do that ?
 
 65.
@@ -592,7 +592,7 @@ text:
 	b. what was it that you accidentally ate ?
 	a. i bought a sandwich and after a few bite i noticed that there was a bunch of mold .	
 labels:
-	what did you eat ? 
+	well it should take some time .
 	==GT: eww that sounds horrible ! were you able to get a refund at least ?
 
 66.
@@ -601,7 +601,7 @@ text:
 	b. oh no , can you return it or get a refund ?
 	a. no i didnt purchase insurance . when i saw it my blood was boiling !	
 labels:
-	i ' m sorry to hear that . 
+	oh that sounds good !
 	==GT: i am sorry to hear that , i would have felt the same way .
 
 67.
@@ -610,7 +610,7 @@ text:
 	b. yeah , 70s were incredible , the dancing the cars , the women had style and the music was incredible .
 	a.  right ? ! but now is just so bad , i wish i could go back	
 labels:
-	i don ' t know if i would be able to . 
+	yes , definitely , i love all kinds of music .
 	==GT: but we got to make the best of it , pretty soon elon musk will release flying cars and then life will be amazing again .
 
 68.
@@ -619,7 +619,7 @@ text:
 	b. i liked my friend very much and believed that he can not talk negatively about me
 	a. what makes you so sure ? anything can happen i mean just look at murphy ' s law	
 labels:
-	i am sure he will be fine 
+	i don ' t trust him but i am always asking my friend
 	==GT: may be you are right . but sometimes , you go with your heart not with the law . murphy ' s law may not work in every situation .
 
 69.
@@ -628,7 +628,7 @@ text:
 	b. dang , how fast did you run away ?
 	a. i froze up because i was terrified . it was just my brother though	
 labels:
-	i ' m sorry to hear that . 
+	thats so bad
 	==GT: did you tell him how creepy he is lol
 
 70.
@@ -637,7 +637,7 @@ text:
 	b. wow , how could they do that ?
 	a. they are complete monsters i tell ya !	
 labels:
-	that sounds like a good idea . 
+	i never knew that .
 	==GT: someone ' s gotta put an end to that poor service !
 
 #==================================================================================================
@@ -648,7 +648,7 @@ text:
 	b. i love tennis . will you watch the us open ?
 	a. maybe . i hadn ' t considered it yet .	
 labels:
-	i ' ll have to check it out . 
+	same here . do you think you are doing anything else ?
 	==GT: it is a great tournament , you should watch .
 
 72.
@@ -657,7 +657,7 @@ text:
 	b. why do they call them biscuits instead of cookies ?
 	a. well the british cooking writer elizabeth david uses it in a section called soft biscuits . then has bread and tea cakes in a different part , so there is another meaning .	
 labels:
-	what is the meaning of biscuits ? 
+	-
 	==GT: i see . i love the british baking show on pbs . they cook all sorts of interesting things .
 
 73.
@@ -666,7 +666,7 @@ text:
 	b. cool , magic : the gathering is a trading card game .
 	a. yep its one of the big classics , its super expensive though sadly	
 labels:
-	it is , it is the most popular card game in the world . 
+	-
 	==GT: that ' s too bad . it was created by richard garfield and published in 1993 .
 
 74.
@@ -675,7 +675,7 @@ text:
 	b. the word " steak " would also refer to many different meats like fish or pork .
 	a. oh yeah i prefer beef steak but i will eat chicken or pork	
 labels:
-	steak is the most widely consumed food in the world . 
+	i would love to have a steak steak on top of the steak
 	==GT: how do you eat your steak ? i usually like eating mine with a sauce .
 
 75.
@@ -684,6 +684,5 @@ text:
 	b. who is your favorite composer ?
 	a. difficult to choose but i would have to say bach .	
 labels:
-	bach is one of my favorites . 
+	what kind of music do you like ?
 	==GT: and your favorite piece ?
-
