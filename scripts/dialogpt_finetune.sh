@@ -4,13 +4,13 @@ parlai train_model \
     --add-start-token True \
     --gpt2-size small \
     --skip-generation True \
-    --task wizard_of_wikipedia \
+    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2 \
     --batchsize 16 \
     --validation-metric loss \
     --dict-tokenizer gpt2 \
     --learningrate 5e-5 \
     --optimizer adamax \
-    --model_file ../../checkpoint/dialogpt/wizard_of_wikipedia/model \
+    --model_file ../../checkpoint/dialogpt/model \
     --text-truncate 360 \
     --label-truncate 72 \
     --fp16 true \

@@ -1,17 +1,20 @@
 python ../parlai/scripts/train_model.py \
     --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2 \
     --model ctcvae \
-    --model-file ../../checkpoint/ctcvae/joint-fine-tuning/model \
+    --model-file ../../checkpoint/ctcvae/noc/model \
     --batchsize 16 \
     --validation-metric loss \
     --skip-generation True \
     --validation-every-n-epochs 0.25 \
     --optimizer adamax \
+    --variant xlm \
+    --activation gelu \
+    --learn-positional-embeddings True \
     --learningrate 1e-4 \
     --dict-tokenizer bpe \
     --dict-lower True \
     --embedding-type glove \
-    --embedding-size 300 \
+    --embedding-size 512 \
     --d-model 512 \
     --ffn-size 2048 \
     --n-heads 8 \
@@ -27,4 +30,5 @@ python ../parlai/scripts/train_model.py \
     --element none \
     --regular False \
     --modulate True \
+    --fp16 true \
     --latentsize 64

@@ -1,0 +1,1032 @@
+%
+% File emnlp2019.tex
+%
+%% Based on the style files for ACL 2019, which were
+%% Based on the style files for EMNLP 2018, which were
+%% Based on the style files for ACL 2018, which were
+%% Based on the style files for ACL-2015, with some improvements
+%%  taken from the NAACL-2016 style
+%% Based on the style files for ACL-2014, which were, in turn,
+%% based on ACL-2013, ACL-2012, ACL-2011, ACL-2010, ACL-IJCNLP-2009,
+%% EACL-2009, IJCNLP-2008...
+%% Based on the style files for EACL 2006 by 
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[hyperref]{emnlp-ijcnlp-2019}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{multirow}
+
+%\aclfinalcopy % Uncomment this line for the final submission
+
+%\setlength\titlebox{5cm}
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+\newcommand\BibTeX{B{\sc ib}\TeX}
+\newcommand\confname{EMNLP-IJCNLP 2019}
+\newcommand\conforg{SIGDAT}
+
+\title{Transformer-Based CVAE With Controllable Low-level Sentence Attributes For Dialogue Generation}
+
+\author{First Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\\And
+  Second Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\}
+
+\date{}
+\usepackage{graphicx}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Open-domain dialogue is the task of generating an answer given context as well as other additional conditions.
+Unlike machine translation task, responses of conversations tend to be more diverse because of less semantically overlapping tokens between the source and target.
+In this paper, we present a conditional variational autoencoder based on Transformer and propose to control two types of low-level attributes of output sentence using the conditional training fasion.
+We insert a fusion layer into Transformer decoder block, so as to allow the control variables and latent variable affect the decoder state at every layer directly.
+During inference, our model generates candidate response conditioned on each combination of those control variables, and then we select the one with highest score calculated by a text matching model as the final reply.
+Experiment results on four conversation datasets demonstrate that our model can generate significantly more diverse responses.
+
+
+% Both traditional and neural approaches to automated essay scoring (AES) have made much progress in recent years.
+% In this paper, we describe a new architecture that leverages a ranking-based approach to combine both handcrafted features and neural features.
+% We use the K nearest neighbor (KNN) approach to obtain the K most similar essays that are used to generate the rating of a given essay.
+% Our new essay scoring architecture takes into account the relatedness between the target sample and all the samples in the training set, which better uses global information.
+% We demonstrate that our method is effective in integrating both traditional and neural features and outperforms the state-of-the-art result in the ASAP\footnote{https://www.kaggle.com/c/asap-aes} data set. 
+\end{abstract}
+
+
+\section{Introduction}
+Chitchat system aims at generating relevant and attractive dialogue in open domain.
+Early systems are generally rule-based or retrieval-based, which require hand-crafted rules and feature engineering, and are usually applied in certain restricted scenarios.
+In latest years, encoder-decoder models training with large-scale social media data in an end-to-end fasion has been increasingly deployed on building open-domain chatbot.
+This approach learns mapping rules implicitly between the consecutive dialogue turns and the corresponding next response.
+
+Unlike other general NLP tasks, there exists a one-to-many property in human dialogue, where the dialogue context may correspond to vast quantity of appropriate replies.
+The direction of a conversation is determined by various factors such as sentiment, speaker style, intention, persona, knowledge, topic, etc \cite{zhou2017mojitalk, zhao2017learning, song2019exploiting, zhou2018commonsense, zhu2021topic}.
+However, dialog history, the major information provided by current large-scale conversation datasets, is only one of the factors.
+Corpus with high-level labels or more background description is general small-sized, which is not adequate to train models with numerous parameters.
+Therefore, obtain massive such corpus in a cheaper and reliable way is a potential direction of dialogue generation.
+
+The deficient shallow decoding process \cite{serban2017hierarchical} is also one constraint of generating diverse responses.
+Prediction for each token is conditioned on all previous observed tokens, which makes the remaining semantic space become smaller gradually.
+In other words, if variations injected at the first few decoding steps are local and weak, the model prefers to generate dull and generic responses.
+
+Intuitively, if we can extract more global features and feed them to the model as conditions, the reply space will be reasonably limited and divided.
+We propose a Conditional Variational AutoEncoder model based on Transformer \cite{vaswani2017attention} for dialogue generation.
+The latent variable learns a probabilistic distribution over diverse relationships in high-level aspects of conversation and is predictable based on the prior information(e.g., the query).
+We additionally design two unpredictable but mathematically computable low-level sentence attributes as auxiliary conditions.
+To better capture these implicit and explicit features, we modify the Transformer decoder block by adding a fusion layer.
+During inference, 
+our model draws samples from the learned distribution and then generates candidate responses in each sub-space.
+Each sub-space corresponds to each combination of those controllable low-level features.
+A text matching model is applied to calculate the secondary scores of candidate responses for selecting the final reply.
+The contributions of this paper can be summarized as follows:
+
+% To make the task harder, we add dropout over source words, setting the full embedding vector for a source word to $0$ with a probability $p_{\textrm{src}}$, all other embedding values are scaled with $1/(1-p_{\textrm{src}})$. During our experiments, we found $p_{\textrm{src}}=0.2$ to work best.
+
+% Automated essay scoring (AES) is a valuable educational application, which helps both teachers and students in writing assessment.
+% In recent years, more and more scoring methods have been proposed and AES has seen significant progress.
+% AES systems mainly contain two modules:
+
+% (1) An essay representation module that extracts neural features or handcrafted features to represent the essay.
+
+% (2) A scoring module that usually uses a machine learning system to rate the essay with the features extracted by the aforementioned module.
+
+% More and more AES models based on both traditional models and deep learning models have been proposed in recent years.
+% Traditional AES systems always use classifiers, regressors, and ranking systems with handcrafted features to rate an essay \cite{Larkey:1998, Rudner:2002, Attali:2006, Yannakoudakis:2011, Chen:2013, Phandi:2015}.
+% Handcrafted features are effective in representing valuable domain knowledge  but are complicated to design and construct.
+% Recently, deep learning based models for AES are becoming more popular and have seen a big progress \cite{Taghipour:2016, Alikaniotis:2016, Jin:2018, Wang:2018, Tay:2018, Farag:2018}.
+% Without any handcrafted features, deep neural networks can automatically discover and learn complex structural features within a problem and make decisions.
+
+% Both handcrafted features and neural features are valuable for the AES problem, and combining them in a unified framework can help us obtain a better representation and understanding of the essay. 
+% This inspires us to propose a ranking-based approach to integrate all the features.
+% In our framework, we use neural networks to obtain the ratings for an essay as neural features.
+% Based on the neural features and handcrafted features we extracted, a listwise ranking based approach can be used to obtain the similarities between the target essay and essays in the training set.
+% We then use the weighted k nearest neighbor (KNN) \cite{Altman:1992} approach to obtain the ratings of the target essay. 
+
+% (1) A unified ranking-based framework is proposed to combine both handcrafted features and neural features, which integrates advantages of the two feature sets.
+
+% (2) We make full use of global information. To rate an essay more accurately, not only the feature of the essays, but also the relationship between essays are made full of in our framework: 
+
+\begin{itemize} 
+\item
+We present a conditional variational autoencoder based on Transformer with controllable low-level sentence attributes(CT-CVAE) for dialogue generation.
+Our code is available at https://github.com/yanghh0/CT-CVAE.
+% we proposed a listwise ranking model to model the similarities between essays. Different from classification and regression models which are optimized to predict a value for each individual example, the goal of listwise ranking model better uses global information, which optimizes the rank of the entire list of examples, and the objective takes the comparison information among all examples into account;
+ 
+\item
+We explore the effect of two controllable attributes combined with a two-stage decoding strategy(beam search + text matching model) on responses generation.
+% we use the weighted KNN approach to obtain the target essay's rating from the most similar essays after ranking. Unlike most of the previous work which usually rate an essay by its own features, the KNN approach considers the relationship between one essay all other essays, which directly uses global information between essays.
+\end{itemize}
+
+\section{Model}
+In this section, we first define our task and then describe in detail the components of the our proposed model.
+The overall architecture of our model is illustrated in Figure~\ref{fig:framework}.
+
+
+
+% the proposed ranking architecture for AES is described.
+% Our framework mainly includes two modules: essay representation module and ranking based scoring module.
+% In the essay representation module, we extract both handcrafted features and neural features for the representation of essays.
+% Intuitively, the scoring framework integrates the advantages of both handcrafted and neural features.
+% In the scoring module, LambdaMART \cite{Burges:2010}, which is a listwise ranking method, is used to obtain the similarity between the target essay and each of the essays in the training set.
+% After that, a weighted KNN approach is used to obtain the rating of the target essay.
+
+%YL: quite repetitive. This is almost the same as sec 1. 
+
+
+\begin{figure*}[ht]
+\centering
+\includegraphics[width = .9\textwidth]{CT-CVAE.pdf}
+\caption{
+The framework of our CT-CVAE model.
+$\oplus$ denotes the concatenation of vectors.
+The dashed connections only exist in training phase.
+Particularly, latent variable fed into fusion layer is sampled from the recognition network connected by a dashed line during training while from the prior network connected by a bold solid line during validating and inference.
+% The framework of ranking based scoring model.
+% In the training stage, both handcrafted features and neural features are extracted before sample group generation step.
+% In the scoring stage, the same feature extraction process is performed for the test essay.
+% The sample group is generated with the indexed essays for each test essay.
+% It should be noted that we use all the training set as the indexed essays in this work.
+% After the sample group generation, a weighted KNN approach is used to rate the essay.
+}
+\label{fig:framework}
+\end{figure*}
+
+\subsection{Task Definition}
+In our definition of dyadic conversation task, there are four elements: dialogue history $h$, response $y$, latent variable $z$ and controllable condition $c$.
+Dialogue history $h$ consists of $k$ sentences $\left \{ x_1,x_2,\cdots, x_k \right \}$, where $x_i=\left \{ w_{1}^{i},w_{2}^{i},\cdots, w_{n_i}^{i} \right \}$ represents the $i$-th sentence containing $n_i$ tokens and $x_k$ represents the current post.
+Condition $c$ is a m-dimensional random variable $\left ( a_1, a_2, \cdots , a_m \right )$. 
+Each variable $a_i$ stands for a type of low-level sentence attribute and is assumed to be real-valued.
+Our goal is to generate a response y which is coherent with the corresponding elements $h,z,c$.
+
+\subsection{Input Representation}
+Besides the word embedding and position embedding used in original Transformer, we also employ another two kind embeddings, turn embedding and role embedding, similar to PLATO ~\cite{bao2019plato} to represent a token.
+Each utterance $x$ in dialogue history $h$ is assigned a turn id, decreasing sequentially from $k$ to 1, and the turn id of $y$ is always set to 0.
+As there are two speakers in each dialog episode for our task, we set two role ids: 0 for the person who speaks first and 1 for the another.
+The final input embedding of a token is the sum of corresponding word, position, turn and role embeddings.
+
+Particularly, we use a special symbol [SEP] as separator and pass all utterances in $h$ as input by concatenating them according to the format: $x_1 \ {\rm [SEP]} \ x_2 \ \cdots \ {\rm [SEP]} \ x_k$.
+
+
+
+% The final input embedding $IE_i$ of $w_i$ is the sum of corresponding word, turn, role and position embeddings:
+% \begin{equation}
+% IR_i=WE_i+TE_i+RE_i+PE_i
+% \end{equation}
+
+% The essay representation module is used to extract both handcrafted features and neural features from a given essay.
+% As depicted in Figure~\ref{fig:essay_represent}, we use several submodules to extract different types of features.
+% After feature concatenation and feature selection, we obtain the final feature set as the representation of the essay.
+
+\subsection{Encoder}
+Encoder block in our model obeys the original Transformer ~\cite{vaswani2017attention}, which includes two key subcomponents: multi-head attention(MH) and feed-forward network(FNN).
+Each subcomponent is accompanied with a residual connection and layer normalization(LN).
+We denote the input and output of the $l$-th encoder block as $E_{i}^{l},E_{o}^{l}$.
+Then its data flow process can be formalized as:
+\begin{equation}
+\begin{split}
+E_{i}^{l} &= E_{o}^{l-1} \\
+A &= {\rm LN} ({\rm MH} (E_{i}^{l}, E_{i}^{l}, E_{i}^{l} ) + E_{i}^{l}) \\
+E_{o}^{l} &= {\rm LN} ( {\rm FFN} ( A ) + A)
+\end{split}
+\end{equation}
+
+For each training step, we first generate the $E_{o}^{L}(h)$ for prior network and decoder by passing the dialog history $h$ through encoder alone, then both $h$ and the response $y$ are fed into encoder to generate the $E_{o}^{L}(h;y)$ for recognition network.
+$L$ is the size of encoder stack.
+
+
+% We have two types of feature extractors: for handcrafted features and for neural features.
+
+% \begin{figure}[]
+% \includegraphics[width = .5\textwidth]{2.png}
+% \caption{
+% The essay representation module.
+% Both handcrafted feature and neural feature extractors use the same feature processing pipeline for representing essays.}
+% \label{fig:essay_represent}
+% \end{figure}
+%YL: repetitive
+
+% {\bf Handcrafted Feature Extractor}
+% We extract nearly 300 handcrafted features which can be classified into 8 categories. All the categories of the features are shown in Table~\ref{font-t1}. The intuition for most of the handcrafted features come from the tool of \textbf{Coh-Matrix}\footnote{http://141.225.41.245/cohmetrixhome/} and \textbf{L2 Syntactic Complexity Analyzer}\footnote{http://www.personal.psu.edu/xxl13/downloads/l2sca.html}, the former of which evaluate an essay from different linguistic aspects and the latter one mainly focus on evaluating the syntactic complexity of an essay. The quality of an essay has a strong relation with the linguistic features. As the features listed in Table~\ref{font-t1}, each category of features main affect the essay in some degree. For example, a well written essay should have specific descriptive features, they may not have too long or too short paragraphs/sentences, and the word number may be in a rational range;  Cohesion features are useful in evaluating the quality of an essay, because an essay with high referential cohesion contains ideas that overlap across sentences and the entire text. The cohesion features we use are defined as some specific classes of words that overlap between pairs of sentences, the classes in our essay include word of noun, word of content, etc; Readability features can evaluate the difficulty of essays, and a few formulas have been developed. Similar to the work in coh-metrix, we use Flesch Reading Ease(RDFRE) and Flesch Kincaid Grade Level(RDFKGL), which are define as following, where ASL is the average number of words per sentences, and ASW is the average number of syllables per word:  
+
+% %\begin{center}
+% \begin{align*}
+% READFRE &= 206.835 - 1.015 * ASL - 84.6 * ASW \\
+% READFKGL &= 0.39 * ASL + 11.8 * ASW - 15.59 
+% \end{align*}
+% %\end{center}
+
+\subsection{Recognition/Prior Network}
+Our model utilizes a latent variable $z$ to determine the high-level semantics between $h$ and $y$.
+As the true posterior distribution $p(z|h,y)$ is intractable, a recognition network $q_\phi(z|h,y)$ (parameterized by $\phi$) is used to approximate it so that we can sample $z$ from $q$ during training.
+Likewise, A prior network $p_\theta(z|h,c)$ (parameterized by $\theta$) is introduced to approximate the real prior distribution $p(z|h,c)$.
+We adopt the assumption that $z$ follows multivariate Gaussian distribution, so $p_\theta$ and $q_\phi$ are also normally distributed:
+\begin{equation}
+\begin{split}
+p_\theta(z|h,c) &\sim \mathcal N(\mu',\sigma'^{2}\rm{\mathbf{I}}) \\
+q_\phi(z|h,y) &\sim \mathcal N(\mu,\sigma^{2}\rm{\mathbf{I}})
+\end{split}
+\end{equation}
+
+We aggregate the output vectors of encoder, $E_{o}^{L}(h)$ and $E_{o}^{L}(h;y)$, respectively to build the input representation of prior net and posterior net.
+Previous study ~\cite{choi2021evaluation} has shown that using average pooling to turn the token embeddings into a fixed-length sentence vector achieves a better performance than [CLS] in BERT.
+However, average vector assigns the same weight to each token, which can not reflect the differential contribution of different tokens to sentence feature.
+In CT-CVAE, we use a multi-query attention mechanism to summary information from each token.
+We define $n$ queries $\left \{ q_1,q_2,\cdots,q_n \right \}$.
+For each query, a vector which is a weighted sum of all the output token embeddings is calculated.
+By repeating $n$ times, we obtain $n$ vectors and the final sentence feature is a vector transformed from a linear network, whose input is the concatenation of these n vectors.
+We demonstrate the computation process as follows:
+\begin{equation}
+\begin{split}
+v_i' &= {\rm MH}(q_i,E_{o}^{L}(h),E_{o}^{L}(h)) \\
+v' &= W'[v_1';v_2';\cdots;v_n'] + b' \\
+v_i &= {\rm MH}(q_i,E_{o}^{L}(h;y),E_{o}^{L}(h;y)) \\
+v &= W[v_1;v_2;\cdots;v_n] + b
+\end{split}
+\end{equation}
+
+Though CVAE model can generate more diverse responses, it may be slightly incompatible with the context \cite{serban2017hierarchical}.
+Our model employs conditional control to improve this problem.
+Unlike those controllable dialogue generation based on high-level attributes, we design two low-level sentence attributes, $c=(a_1,a_2)$, as auxiliary features.
+
+Intuitively, if a response contains rarer words or the length of it is longer, then it may be more informative.
+We use the following formula to measure such features of response $y$:
+\begin{equation}
+\begin{split}
+S(y)=\sum_{i=0}^{len(y)-1}\left ( 1 - \frac{{\rm TF}(w_i)-{\rm minTF}}{{\rm maxTF} - {\rm minTF}} \right )
+\end{split}
+\end{equation}
+where TF($w_i$) is the frequency of token $w_i$, a statistic from the training datasets.
+We discretize $S(y)$ into 6 intervals:
+\begin{equation}
+\begin{split}
+a_1=
+\left\{\begin{matrix}
+0 & S(y) \in [1,6]\\ 
+1 & S(y) \in [7,12]\\ 
+\vdots  & \vdots \\ 
+5 & S(y) \in [31,+\infty]
+\end{matrix}\right.
+\end{split}
+\end{equation}
+
+Since punctuation marks, such as ‘?’ and ‘!’, can reflect sentence function to a certain extent, we simply declare $a_2$ as a binary variable, whose value is 0 or 1, to indicate whether ‘?’ exists in the response.
+
+After all the vector representations of $h$, $c$ and $h\oplus y$ are obtained, the means and variances of $p_\theta$ and $q_\phi$ are computed as follows:
+\begin{equation}
+\begin{split}
+\begin{bmatrix}
+\mu'\\ 
+{\rm log}(\sigma'^{2})
+\end{bmatrix} = {\rm MLP}_p\begin{bmatrix}
+v' \\ 
+e(a_1) \\
+e(a_2)
+\end{bmatrix} \\
+\begin{bmatrix}
+\mu\\ 
+{\rm log}(\sigma^{2})
+\end{bmatrix} = W_r (v)+b_r
+\end{split}
+\end{equation}
+where $e(a_i)$ is the embedding of $a_i$ and ${\rm MLP}_{p}$ is a 2-layer multi-layer perceptron with a tanh activation
+
+\subsection{Decoder}
+In practice, we find that the KL loss will rapidly decrease to 0 if the latent variable $z$ is simply combined with the final decoder state, known as posterior collapse or KL-vanishing ~\cite{bowman2015generating}.
+To better incorporate latent variable $z$ and condition $c$, we propose inserting a fusion layer(FL) at top of each original Transformer decoder block.
+We denote the input and output of the $l$-th decoder block as $D_{i}^{l},D_{o}^{l}$.
+Then its data flow process can be formalized as:
+\begin{equation}
+\begin{split}
+D_{i}^{l} &= D_{o}^{l-1} \\
+A &= {\rm LN} ({\rm MH} (D_{i}^{l}, D_{i}^{l}, D_{i}^{l} ) + D_{i}^{l}) \\
+B &= {\rm LN} ({\rm MH} (A, E_{o}^{L}(h), E_{o}^{L}(h) ) + A) \\
+C &= {\rm LN} ( {\rm FFN} ( B ) + B) \\
+D_{o}^{l} &= {\rm LN} \left ( {\rm FL}(C)\right )
+\end{split}
+\end{equation}
+${\rm FL}(C)$ is calculated as:
+\begin{equation}
+\begin{split}
+{\rm MLP}_{\beta }^{l} \left ( \left (C + \sum_{i=1}^{2}{\rm MLP}_{\alpha}^{l}\left ( e(a_i) \right ) \right ) \oplus z \right )
+\end{split}
+\end{equation}
+where ${\rm MLP}_{\alpha}^{l}$ is a 2-layer multi-layer perceptron with a ReLU activation and ${\rm MLP}_{\beta }^{l}$ is a linear transformation.
+
+CVAE is trained with the SGVB framework ~\cite{kingma2013auto} by maximizing the variational lower bound.
+We also employe the bag-of-word (BOW) loss ~\cite{zhao2017learning} to reduce posterior collapse.
+We have training objective:
+\begin{equation}
+\begin{split}
+\mathcal L(\theta,\phi;h,y,c) = E_{q_\phi(z|h,y)}\left [ {\rm log} \, p(y|z,h,c) \right ] \\
+-KL\left (q_\phi(z|h,y) \parallel p_\theta(z|h,c)  \right ) \\
++E_{q_\phi(z|h,y)}\left [ {\rm log} \, p(y_{bow} |z,h ) \right ]
+\end{split}
+\end{equation}
+
+
+\subsection{Inference}
+Due to the unpredictability of condition c, we split inference procedure into two stages:
+
+(1) Conditioned on each combination of $a_1,a_2$, generate corresponding candidate response $y$.
+
+(2) Using a Cross-Encoder(CE) model, whose input is two concatenated sentences, to calculate the matching scores between dialog history and all candidate responses, then we select the one with highest score as the final response.
+
+\section{Experiment}
+
+
+
+% The connective features include incidence score of all connectives or some specific kinds connectives, which evaluate the organization of sentences, and is useful in evaluating the cohesive quality of sentences.
+
+
+
+% some of which come from the tool of \textbf{Coh-Matrix}\footnote{http://141.225.41.245/cohmetrixhome/} and \textbf{L2 Syntactic Complexity Analyzer}\footnote{http://www.personal.psu.edu/xxl13/downloads/l2sca.html}.
+% Other features are composed of language model features, POS features, syntax features, etc.
+% We list some of these features in Table~\ref{font-t1}.
+% Most of the handcrafted features are the statistics about words, sentences, paragraphs and other types of grammatical units like gerunds, infinitives, etc.
+% The statistics mainly include count, standard deviation, incidence score\footnote{An incidence score is the number of classified units per 1000 words.}, etc.
+% Each statistics of features can be seen as the evaluation of an essay in certain aspects.
+% Besides, we also extract the number of grammatical errors as a feature, which is of great help to identify low rating essays. The grammatical error correction method we use is described in~\cite{Chuan:2017}. 
+
+
+% \begin{table}[h!]
+% \begin{center}
+% \scalebox{0.66}{
+% \begin{tabular}{c|c}
+% \hline \bf Feature category& \bf Example of related features \\ \hline
+% Descriptive & mean length of paragraphs\\
+% Cohesion & mean number adjacent sentence pairs which have noun overlap\\
+% Readability & READFRE(combination of average sentence and word length)\\
+% Connective & Incidence score of all connectives\\
+% Syntactic complexity & Clauses number / sentences number\\
+% Word information & mean familiarity of words\\
+% grammar & number of grammatical errors\\
+% \hline
+% \end{tabular}}
+% \end{center}
+% \caption{\label{font-t1} Handcrafted features for essay representation. }
+% \end{table}
+
+% \begin{table*}[t!]
+% \begin{center}
+% %\scalebox{0.9}{
+% \begin{tabular}{l}
+% \hline \bf  Feature descriptions \\ \hline
+% Statistics of words/sentences/paragraphs \\
+% Statistics of gerunds\\
+% Statistics of infinitives \\
+% Statistics of different clauses \\
+% Statistics of different phrases \\
+% Statistics of different connectives \\
+% Number of specific grammar errors \\
+% \hline
+% \end{tabular}%}
+% \end{center}
+% \caption{\label{font-t1} Some of the handcrafted features used in our essay representation. }
+% \end{table*}
+
+
+% {\bf Neural Feature Extractor}
+% Neural features have been proved to be useful in AES systems~\cite{Taghipour:2016, Alikaniotis:2016, Jin:2018, Wang:2018, Tay:2018}.
+% Each neural network is trained on a specific combination of the essay's semantic (Sem) embeddings, Part-of-Speech (POS) embeddings and syntactic (Synt) embeddings.
+% We consider the final score as the neural information of the corresponding combination of embeddings. 
+
+% According to~\cite{Tay:2018, Alikaniotis:2016, Taghipour:2016}, we use the pre-trained 50-dimension word vector~\cite{pennington2014glove} as the input of the neural network to represent Sem embeddings.
+% For POS embeddings, following~\cite{Tay:2018}, we use CoreNLP~\cite{Manning:2014} to generate POS tags for each token, which is then represented by one-hot encoding.
+% We use the same network structure for Synt embeddings as in~\cite{Tay:2018}, while the representation for Synt sequences we use is different.
+% As depicted in~\cite{Liu:2017}, syntactic information of a sentence can be captured from the leaf node to the root node in a constituency tree.
+% We represent the Synt sequences following this way.
+% For example, for the tree which is shown in Figure~\ref{fig:constitute_tree}, the token `project' is encoded into a sequence (NN NP S) and the token `important' is encoded into a sequence (JJ ADJP VP S).
+% The sequences above will then be converted into sequences of one-hot encoding.
+% To improve the training speed and memory consumption, we limit the size of syntactic sequences to 10.
+% Only the syntactic tags within top 10 positions can be used for the input of phrase-level Bi-directional LSTM.
+
+% \begin{figure}[h]
+% \includegraphics[width = .5\textwidth]{3.png}
+% \caption{A sample of constituency tree}
+% \label{fig:constitute_tree}
+% \end{figure}
+
+% All the combinations of feature types we used are listed in Table~\ref{font-t2}.
+% We trained a neural network based feature extractor for each combination separately.
+% The original ratings are scaled to range [0,1] and used to train the embeddings and parameters of the neural network.
+% After the training of the models corresponding to each combination, we use the models to score essays.
+% Scoring results will then be used as the features for our ranking model.
+%YL: training/model for NNs is not clear. Are these separately trained? 
+
+% \begin{table}[b!]
+% \begin{center}
+% \scalebox{0.75}{
+% \begin{tabular}{l}
+% \hline \bf  Feature types \\ \hline
+% Semantic (Sem)\\
+% Part-Of-Speech (POS)\\
+% Syntactic (Synt)\\
+% Semantic (Sem) and Part-Of-Speech (POS)\\
+% Semantic (Sem) and Syntactic (Synt) \\
+% Part-Of-Speech (POS) and Syntactic (Synt) \\
+% Semantic (Sem), Part-Of-Speech (POS) and Syntactic (Synt) \\
+% \hline
+% \end{tabular}}
+% \end{center}
+% \caption{\label{font-t2} All combinations of embedding types. }
+% \end{table}
+
+% {\bf Datasets}
+% Although we obtained all the features to represent the essays, some of the features may be redundant or not effective.
+% We naturally perform feature selection to maintain only important features.
+% We selected the most frequently used features in XGBoost~\footnote{https://github.com/dmlc/xgboost} regression learning process.
+
+%YL: what are the concatenated features, other than the previously mentioned ones? if there's no new one, no need to say concatenation here. 
+
+\begin{table}[h!]
+\begin{center}
+\scalebox{0.7}{
+\begin{tabular}{ccccc}
+\hline \bf Corpus& \bf Stage& \bf \#Train& \bf \#Valid& \bf \#Test \\ \hline
+Reddit & Pre-train & 5,879,708 & 323,061 & 258,449 \\
+Dailydialog & Fine-tune & 22,236 & 2,000 & 2,000 \\
+Convai2 & Fine-tune & 17,878 & 1,000 & 1,000 \\
+Empatheticdialogues & Fine-tune & 39,057 & 2,769 & 2,547 \\
+Wizard\_of\_wikipedia & Fine-tune & 18,430 & 1,962 & 1,930 \\
+\hline
+\end{tabular}}
+\end{center}
+\caption{\label{font-t1} Number of dialogue episodes for each dataset.}
+\end{table}
+
+
+\subsection{Datasets}
+We hope the final obtained dialogue models to be flexible enough to support various kinds of conversations, including chitchat, knowledge, personality and empathy, etc.
+Therefore, we select four publicly available datasets, DailyDialog ~\cite{li2017dailydialog},  ConvAI2, Empathetic Dialogues ~\cite{rashkin2018towards} and Wizard of Wikipedia ~\cite{dinan2018wizard}, with these features as benchmark datasets. 
+Large-scale corpus Reddit ~\cite{dziri2018augmenting}, which
+has been proved to be helpful in various conversation downstream tasks, is employed for pretraining all models in our experiments.
+The overall statistics of these datasets are summarized in Table~\ref{font-t1}.
+We now describe each in turn.
+
+{\bf DailyDialog(DD)}
+It is a chitchat dataset which covers ten categories ranging from holidays to financial topics and can reflect conversations occurring in daily life.
+
+{\bf ConvAI2(CA)}
+Each speaker is given a role to play based on sentences describing their persona, both participants engage in dialogue around their roles in an attempt to know each other.
+
+{\bf Empathetic Dialogues(ED)}
+In each dialogue, one speaker begins the conversation grounded in an emotional situation and the other responses with compassion.
+
+{\bf Wizard of Wikipedia(WOW)}
+This task involves discussing a given topic in depth, where the goal is to both engage the partner as well as display expert knowledge.
+
+We fine-tune all pre-trained models on the four datasets jointly in a multi-task(MT) learning fashion.
+The weights of the loss function for each task are 1,1,1,1.
+
+
+% We fine-tune all pre-trained models on a single dataset respectively and also on the four datasets jointly in a multi-task(MT) learning fashion to evaluate the overall performance.
+
+% Learning to rank methods have been studied by \cite{Chen:2013, Yannakoudakis:2011} and the results outperform classification and regression methods.
+% \cite{Yannakoudakis:2011} is the first to solve the AES problem using a ranking method.
+% However, their pairwise ranking method did not consider global information.
+% \cite{Chen:2013} used a listwise method to model the ranking orders for all the essays.
+
+\subsection{Compared Methods}
+The following models with different architectures have been compared with our proposed CT-CVAE.
+
+{\bf Seq2Seq}
+A sequence to sequence recurrent neural model with global attention mechanism ~\cite{bahdanau2014neural}.
+
+{\bf HRED}
+A hierarchical Seq2Seq model ~\cite{serban2016building}, which represents the dialogue context at token level and sentence level.
+
+{\bf CVAE}
+We implement a conditional variational autoencoder with a hierarchical context encoder based on Seq2Seq ~\cite{zhao2017learning} without linguistic features.
+
+{\bf Transformer}
+The original Transformer model ~\cite{vaswani2017attention} is also compared.
+
+{\bf DialoGPT-small}
+A language model ~\cite{zhang2019dialogpt} for conversational response generation inheriting from GPT-2, trained on massive real-world reddit comments.
+
+\subsection{Implementation Details}
+For our model and all baselines except the DialoGPT, the inner hidden vector dimension $d_{model}$ is set to 512 and the token embedding dimension $d_{emb}$ is set to 300.
+For the original Transformer and our CT-CVAE, we set hyper-parameters as 6-layer encoder, 8-layer decoder, 8 attention heads and 2048 feed-forward filter size.
+For two hierarchical models, the token-level encoder is a 2-layer bidirectional LSTM and the sentence-level encoder is a 2-layer unidirectional LSTM.
+For three RNN-based models, we set encoder as 4-layer bidirectional LSTM except the hierarchical models and decoder as 4-layer unidirectional LSTM.
+For VAE models, the dimension of latent variable $z$ is set to 64.
+For our CT-CVAE, the embedding of control variables $a_1,a_2$ is 30.
+
+We build a vocabulary of size 32K including frequency of each token based on all our datasets using BPE and initialize word embedding matrix with 300-dimensional Glove embeddings.
+% Tokens out of vocabulary are replaced with [UNK].
+Adamax optimizer is employed for optimization with an initial learning rate of $1 \times 10^{-4}$.
+We also use KL annealing ~\cite{bowman2015generating} (200,000 steps for pre-training, 60,000 steps for multi-task fine-tuning and 15,000 steps for single-task fine-tuning) to achieve better performance.
+The maximum sequence length of context and response is set to 360 and 72 respectively.
+During testing, we use standard beam search with a beam size of 10, no minimum beam decoding constraint, but with context and response 3-gram blocking.
+
+\begin{table}[h!]
+\begin{center}
+\scalebox{0.6}{
+\begin{tabular}{ccccccc}
+    \hline
+    Corpus & Methods & PPL & B-1/2/3/4 & D-1/2 & H-0/1/2 \\
+    \hline
+    \multirow{7}{*}{DD} 
+    % & Seq2Seq & 16.3 & .115/.060/.035/.020 & .046/.227 & -\\
+    & Seq2Seq & 16.8 & .096/.043/.020/.009 & .043/.186 & -\\
+    % & HRED & 20.0 & .097/.041/.020/.010 & .026/.138 & -\\
+    & HRED & 21.1 & .087/.037/.018/.008 & .021/.102 & -\\
+    % & R-CVAE & 76.8 & .092/.022/.007/.002 & .034/.272 & - \\
+    & R-CVAE & 96.7 & .081/.019/.005/.002 & .035/.270 & - \\
+    % & DialoGPT & 11.3 & .104/.049/.024/.010 &.053/.225 & - \\
+    & DialoGPT & 11.8 & .095/.045/.021/.010 &.050/.198 & - \\
+    % & Transformer & 17.3 & .070/.028/.012/.005 & .021/.073 & - \\
+    % & CT-CVAE & 34,304 & 969,586 & 969,586 & 969,586 \\
+    & Transformer \\
+    & CT-CVAE \\
+    & w/o c \\
+    \hline
+    \multirow{7}{*}{CA} 
+    % & Seq2Seq & 23.3 & .122/.045/.018/.008 & .022/.101 & - \\
+    & Seq2Seq & 22.7 & .124/.044/.017/.008 & .025/.118 & - \\
+    % & HRED & 27.6 & .112/.039/.014/.006 & .007/.036 & - \\
+    & HRED & 27.4 & .117/.041/.015/.007 & .012/.059 & - \\
+    % & R-CVAE & 173.0 & .105/.026/.005/.001 & .026/.217 & - \\
+    & R-CVAE & 158.3 & .107/.024/.006/.002 & .030/.229 & - \\
+    % & DialoGPT & 16.1 & .119/.047/.018/.007 & .024/.094 & - \\
+    & DialoGPT & 16.1 & .126/.049/.019/.009 & .026/.109 & - \\
+    % & Transformer & 24.8 & .096/.033/.012/.006 & .006/./019 & - \\
+    % & CT-CVAE & 34,304 & 969,586 & 969,586 & 969,586 \\
+    & Transformer \\
+    & CT-CVAE \\
+    & w/o c \\
+    \hline
+    \multirow{7}{*}{ED} 
+    % & Seq2Seq & 19.7 & .105/.032/.015/.009 & .021/.073 & -\\
+    & Seq2Seq & 19.6 & .105/.033/.014/.009 & .023/.086 & -\\
+    % & HRED & 23.1 & .102/.031/.013/.007 & .008/.035 & -\\
+    & HRED & 23.2 & .098/.026/.010/.005 & .011/.043 & -\\
+    % & R-CVAE & 120.6 & .096/.020/.005/.002 & .026/.213 & - \\
+    & R-CVAE & 128.0 & .086/.016/.003/.002 & .031/.224 & - \\
+    % & DialoGPT & 13.7 & .110/.042/.020/.012 & .027/.102 & -\\
+    & DialoGPT & 13.8 & .109/.039/.018/.010 & .032/.113 & -\\
+    % & Transformer & 20.1 & .094/.029/.012/.007 & .010/.034/ & - \\
+    % & CT-CVAE & 34,304 & 969,586 & 969,586 & 969,586 \\
+    & Transformer \\
+    & CT-CVAE \\
+    & w/o c \\
+    \hline
+    \multirow{7}{*}{WOW} 
+    % & Seq2Seq & 28.8 & .105/.030/.008/.003 & .042/.190 & - \\
+    & Seq2Seq & 28.6 & .103/.030/.010/.005 & .042/.193 & - \\
+    % & HRED & 38.6 & .103/.026/.009/.004 & .015/.073 & - \\
+    & HRED & 39.4 & .100/.026/.009/.004 & .018/.088 & - \\
+    % & R-CVAE & 156.9 & .099/.019/.004/.001 & .041/.284 & - \\
+    & R-CVAE & 158.6 & .096/.018/.004/.001 & .043/.295 & - \\
+    % & DialoGPT & 18.5 &.110/.038/.015/.008 & .064/.234 & - \\
+    & DialoGPT & 18.5 &.111/.038/.015/.008 & .065/.244 & - \\
+    % & Transformer & 29.8 & .098/.019/.007/.003 & .013/.040 & - \\
+    % & CT-CVAE & 34,304 & 969,586 & 969,586 & 969,586 \\
+    & Transformer \\
+    & CT-CVAE \\
+    & w/o c \\
+    \hline
+    \multirow{7}{*}{MT} 
+    & Seq2Seq & 21.9 & .107/.037/.015/.007 & .018/.109 & .42/.28/.30\\
+    & HRED & 27.8 & .100/.032/.013/.006 & .007/.045 & .35/.30/.35\\
+    & R-CVAE & 135.4 & .092/.020/.004/.001 & .015/.173 & .56/.18/.26 \\
+    & DialoGPT & 15.1 & .110/.042/.018/.009 & .026/.128 & .18/.38/.45\\
+    % & Transformer & 23.0 & .091/.027/.010/.004 & .007/.030 & - \\
+    % & CT-CVAE & 34,304 & 969,586 & 969,586 & 969,586 \\
+    & Transformer \\
+    & CT-CVAE \\
+    & w/o c \\
+    \hline
+\end{tabular}}
+\end{center}
+\caption{\label{font-t2} Experimental results on automatic and manual measures. Note that “MT”, “B”, “D”, “H” denotes multi-task, BLEU, DISTINCT, Human respectively.}
+\end{table}
+
+For CT-CVAE, a Cross-Encoder model composed of only the encoder of our model is trained to perform a two-stage inference process.
+The candidate sentences for each training and validation come from the corresponding batch whose size is set to 16.
+The matching model finally obtains the best accuracy of 0.61.
+
+\subsection{Metric}
+
+To evaluate the responses generated by all compared methods, we conduct both the automatic evaluation and manual evaluation on the valid set.
+
+For automatic evaluation, we report: 
+1) {\bf Perplexity(PPL)} reflects the difficulty of generating ground truth responses. 
+2) {\bf BLEU} \cite{chen2014systematic} measures word overlap between the generated response and the ground truth.
+We use BLEU-1 to 4 as our lexical similarity metric.
+3) {\bf DISTINCT-1/2} ~\cite{li2015diversity} can measure the diversity of generated responses by calculating the ratio of distinct unigrams/bigrams in all generated tokens.
+
+For manual evaluation, we randomly collect 100 dialogue contexts with at least three conversational turns and the corresponding responses generated by all models.
+Then two students in out lab are hired to score the response quality on a scale of [0, 1, 2],  where 0 means an unsuitable response, 1 means a generic response and 2 means a appropriate response.
+
+% For automatic evaluation, we report: (1) BLEU measures word overlap between the generated response and the ground truth.
+
+% $\mathbf{PPL}$
+
+% $\mathbf{BLEU{-}1/2/3/4}$
+
+% $\mathbf{DISTINCT{-}1/2}$
+
+\begin{figure}[h]
+\includegraphics[width = .46\textwidth]{1.png}
+\caption{Length statistics of generated responses}
+\label{fig:constitute_tree}
+\end{figure}
+
+\section{Results and Analysis}
+
+\subsection{Main Results}
+\label{4.1}
+D-1/2 is .032/.362.
+
+As the hierarchical models encode each dialogue turn separately, they can not utilize the full history information which is essential for understanding semantics.
+
+CVAE has the highest perplexity.
+
+For Distinct-1/2, our model generates remarkably more distinct unigrams and bigrams compared to the baselines.
+
+It can be observed that the generation quality of Transformer-based approaches is significantly better than that of RNN-based methods.
+
+In open-domain dialogue generation, the correlation between automatic metrics and human judgements is weak.
+
+
+
+% \begin{table}[h!]
+% \begin{center}
+% \scalebox{0.7}{
+% \begin{tabular}{ccccc}
+% \hline \bf Hits@1& \bf Hits@5& \bf MRR& \bf RANK& \\ \hline
+% .65 & .95 & 1.8 & .77 \\
+% \hline
+% \end{tabular}}
+% \end{center}
+% \caption{\label{font-t3} Statistics of ASAP dataset. }
+% \end{table}
+
+\subsection{Control Accuracy}
+\label{4.2}
+In section ~\ref{4.2} and ~\ref{4.3}, we reduce our model to 4-layer encoder and 6-layer decoder to perform experiments on DailyDialog dataset without pre-training.
+
+We investigate the impacts of the controllable conditions and the added fusion layer and the results are in table ~\ref{font-t3}.
+The $a_1$ and $a_2$ achieves 70\% and 100\% control accuracy respectively, indicating that the method used in our model can control these two type sentence attributes precisely.
+The $a_1$ is more dominant in BLEU-1/2/3/4 while shows comparatively less diversity than $a_2$.
+We think this is caused by the limitation of Dinstinct metric discussed in section ~\ref{4.1}.
+Due to $a_1$ is more complex than $a_2$, the numerator and denominator of ACC-$a_1$ are much larger than the counterparts of ACC-$a_2$, which implies $a_1$ actually generates more diverse tokens.
+After we remove the fusion layer and simply combine $z$ with only the output of last decoder layer, all metrics decrease except the PPL, showing that our approach makes better use of the latent variable.
+
+\begin{table}[h!]
+\begin{center}
+\scalebox{0.65}{
+\begin{tabular}{ccccc}
+\hline \bf Models& \bf PPL& \bf B-1/2/3/4& \bf D-1/2& \bf ACC-$a_1/a_2$\\ \hline
+% T-CVAE & 42.7 & .095/.033/.013/.006 & \textbf{.036}/\textbf{.233} & - \\
+T-CVAE & 42.0 & .090/.031/.013/.005 & .040/.236 & - \\
+% + $a_1$ & 38.8 & .135/.037/.013/\textbf{.007} & .027/.209 & .70/- \\
++ $a_1$ & 34.3 & .146/.045/.017/.008 & .035/.249 & .72/- \\
+% + $a_2$ & 42.3 & .097/.033/.013/.006 & .033/.220 & -/1.0 \\
++ $a_2$ & 36.9 & .103/.039/.016/.008 & .042/.255 & -/1.0 \\
++ $a_1$,$a_2$ & 34.5 & \textbf{.149}/\textbf{.046}/\textbf{.017}/.006 & .026/.203 & .71/1.0 \\
+% + $a_1$,$a_2$,CE & 60.3 & .107/.030/.010/.004 & .016/.160 & - \\
+- FL & \textbf{\textbf{30.8}} & .083/.028/.012/.005 & .030/.166 & - \\
+\hline
+\end{tabular}}
+\end{center}
+\caption{\label{font-t3} Impacts of $a_1,a_2$ and fusion layer on model. ACC-$a_1,a_2$ means the accuracy of controlling $a_1,a_2$.}
+\end{table}
+
+\subsection{Effect Of n And KL Annealing Steps}
+\label{4.3}
+Table ~\ref{font-t4} shows metrics when we set different number of queries $n$ and KL annealing steps.
+Intuitively, the more learnable queries are set, the more information can be encoded into the Gaussian distribution.
+We do not observe a clear pattern from the experimental results, but when we set $n>1$, the metrics are all significantly better than the case of $n=1$.
+KLA is another approach to help $z$ learning substantial information.
+The more steps it takes to increase from 0 to 1, the higher the final KL($q \parallel p$) is.
+As presented by the table, metrics are not continuously improved with the increasing KL steps.
+As our model is dependent on the prior distribution during testing phase, we not only expect $z$ to learn abundant knowledge, but also hope the KL($q \parallel p$) is small.
+The optimization of KL loss and reconstruction loss is an adversarial process.
+The slow growth of the KL weight may be detrimental to the optimization of KL term,
+
+
+
+\begin{table}[h!]
+\begin{center}
+\scalebox{0.65}{
+\begin{tabular}{ccccccc}
+\hline \bf KL steps& \bf n& \bf PPL& \bf B-1/2/3/4& \bf D-1/2& \bf  KL($q \parallel p$)\\ \hline
+% 25,000 & 1 & \textbf{13.8}/43.5 & .089/.027/.010/.004 & .033/.215 & .561 \\
+25,000 & 1 & 13.2/44.7 & .087/.028/.011/.004 & .042/.247 & .578 \\
+% 25,000 & 2 & 14.4/42.7 & .095/\textbf{.033}/.013/.006 & \textbf{.036}/\textbf{.233} & \textbf{.515} \\
+25,000 & 2 & 13.2/42.0 & .090/.031/.013/.005 & .040/.236 & .600 \\
+% 25,000 & 3 & 14.2/44.6 & .090/.030/.012/.005 & .034/.222 & .525 \\
+25,000 & 3 & 13.3/40.2 & .093/.031/.012/.006 & .040/.243 & .592 \\
+% 25,000 &4 & 14.5/44.6 & .095/.031/.012/.006 & .034/.222 & .533 \\
+25,000 &4 & 14.4/44.6 & .095/.031/.012/.006 & .034/.222 & .546 \\
+25,000 & 5 & 14.4/\textbf{42.4} & .091/.029/.011/.005 & .034/.226 & .529 \\
+25,000 & 6 & 14.7/44.1 & \textbf{.100}/\textbf{.033}/\textbf{.014}/\textbf{.007} & .034/.225 & .529 \\
+\hline
+% 5,000 & 2 & 18.6/\textcolor{blue}{31.5} & .083/.027/.010/.004 & .032/.175 & \textcolor{blue}{.197} \\
+% 5,000 & 2 & 17.0/32.9 & .092/.035/.015/.008 & .044/.242 & .279 \\
+10,000 & 2 & 16.1/38.5 & .094/.033/.015/.007 & .035/.219 & .389 \\
+15,000 & 2 & 15.6/41.9 & \textcolor{blue}{.102}/\textcolor{blue}{.036}/\textcolor{blue}{.017}/\textcolor{blue}{.009} & \textcolor{blue}{.038}/\textcolor{blue}{.245} & .447 \\
+20,000 & 2 & \textcolor{blue}{14.6}/43.1 & .094/.031/.013/.005 & .034/.221 & .503 \\
+\hline
+\end{tabular}}
+\end{center}
+\caption{\label{font-t4} The results of different n size and KL steps. We report PPLs at training and validating.}
+\end{table}
+
+\subsection{Case Analysis}
+We provide two generated dialogues in table ~\ref{font-t5} from the DailyDialog datasets.
+For CT-CVAE, the responses are selected by the cross-encoder model.
+We also present the responses corresponding to all combinations of $a_1,a_2$ and responses from the model without conditional control.
+
+% \begin{table}[b!]
+% \begin{center}
+% \scalebox{0.7}{
+% \begin{tabular}{cccc}
+% \hline \bf Hits@1& \bf Hits@2& \bf MRR& \bf Rank\\ \hline
+% Seq2Seq & 1 & 1783 & 350 \\
+% \hline
+% \end{tabular}}
+% \end{center}
+% \caption{\label{font-t3} Statistics of ASAP dataset. }
+% \end{table}
+
+
+
+
+
+% Our ranking method is different from the aforementioned two ranking methods.
+% In our framework, a listwise ranking method is used to obtain the similarity between the target essay and each of the essays in the training set.
+% Next we get the score of the target essay through a weighted KNN approach.
+% In addition, we combine both handcrafted features and neural features to leverage the advantages from both feature sets.
+
+% {\bf Ranking model}
+% We use the LambdaMART~\cite{Burges:2010} model, which has been proven to be an effective algorithm for solving ranking problems.
+% %We directly used the LambdaMART implementation in XGBoost.
+% We use NDCG\cite{ndcg2000} as the evaluation metric in our ranking task.
+% LambdaMART is successful for directly optimizing the evaluation NDCG, MAP, MRR, etc.
+% Following the description of~\cite{Burges:2010}, the cost function for a sample $s_i$ in the pair $(s_i, s_j)$ belonging to a sample group can be defined as $C_{ij}$, which is shown as follows.
+% %\begin{center}
+% \begin{align*}
+% S_{ij} &= |\Delta NDCG_{ij}| log(1+e^{-\sigma (\hat y_i-\hat y_j)}) \\
+% C_{ij} &= \sum_{j:(i, j) \in I}S_{ij} - \sum_{j:(j, i) \in I}S_{ij}
+% \end{align*}
+% %\end{center}
+% $\Delta NDCG_{ij}$ means the update in NDCG metric by swapping the rank positions of sample $s_i$ and $s_j$.
+% $\hat y_i$ indicates the rank score for sample $s_i$.
+% $\sigma$ is a constant.
+% $I$ denotes the set of sample pairs with indices $(i, j)$, where sample $s_i$ is ranked higher than $s_j$. 
+
+% During the training stage, all the sample groups corresponding to the training set are used to train the LambdaMART model.
+% We early stop the training process according to the NDCG metric on the validation set.
+  
+% {\bf Data preparation for ranking model}
+% In the training and testing stage, the input to the ranking model is the sample groups.
+% To generate training sample groups, for each sample $s_i(1<=i<=n)$ in the training set that is considered as a target sample, we combine $s_i$ with all the other samples $s_j(1<=j<=n)$ that are considered as candidate samples to generate a sample group $g_i$.
+% The features and labels for each sample $g_{ij}$ in $g_i$ is generated as follows:
+%\begin{center}
+% \begin{align*}
+% s_i &= [x_i, y_i] \\
+% s_j &= [x_j, y_j] \\
+% g_{ij} &= [{x_i-x_j, C-|y_i - y_j|}] \\
+% x_i &= [x_{i1}, x_{i2}, ... ,x_{ik}, ... x_{id}] \\
+% x_j &= [x_{j1}, x_{j2}, ... ,x_{jk}, ... x_{jd}]
+% \end{align*}
+%\end{center}
+% \noindent where $n$ denotes the number of training samples,
+% $x_i$ is the feature of $s_i$,
+% $y_i$ is the label of $s_i$ that is the rescaled rating of the essay,
+% $x_{ik}$ indicates the $k^{th}$ feature value for sample $s_i$, 
+% $d$ is the feature dimension,
+% and $C$ is a constant in all the training and testing stages, which is defined as follows: 
+%\begin{center}
+% \begin{align*}
+% C=\max ({y_1, ..., y_i}) - \min ({y_1, ..., y_n})
+% \end{align*}
+%\end{center}
+% Intuitively, similar essays have similar ratings.
+% By using ${C-|y_i - y_j|}$ as the relevance score between the target sample $s_i$ and the candidate sample $s_j$ in a sample group, we obtain high relevance score when $y_i - y_j$ is a small value, and low relevance score when $y_i - y_j$ is a big value.
+% If we can rank samples accurately in a sample group, the original ratings of the candidate samples that rank high in the result are more similar to the target essay. 
+
+% We subtract the feature values point by point between a target sample and each sample in sample groups to generate the new features fed through the ranking model.
+% The inspiration for using subtraction is that when the features are used to describe the complexity or correctness, the difference in each dimension describes the divergence between two samples.
+
+% To generate sample groups for the validation set and test set, the process is similar to the training set. The only difference is that all the target samples $s_i$ come from validation/test set instead of training set, and the final group number is equal to the sample number in the validation/test sets.
+
+% {\bf Weighted KNN algorithm}
+% K-nearest neighbors algorithm (KNN) is a classification method.
+% We employed the weighted KNN method to get the rating of the target sample $y_i$ in 3 steps:
+
+% (1) Through the ranking model, we get the relevance scores $\hat y$ for all samples in the sample group, $(\hat y_1, \hat y_2, ...... \hat y_n)$.
+
+% (2) We select the top K samples with the highest relevance scores $G = \{g_j\}$ as the neighbors of the target essay.
+% Both the relevance scores $\hat y_j$ and the corresponding original ratings $y_j$ are obtained.
+%\begin{center}
+% \begin{align*}
+% Y=\{(\hat y_j, y_j), where\ g_j \in G\}
+% \end{align*}
+%\end{center}
+(3) We obtain the final rating $r_i$ of the target essay $s_i$ by a weighted average approach as follows:
+%\begin{center}
+% \begin{align*}
+% r_i &= \sum_{y_j \in Y} w_j * y_j \\
+% w_j &= \frac{\hat y_j}{\sum_{y_j \in Y} \hat y_j}
+% \end{align*}
+%\end{center}
+We assigned different values to K according to the performance on the validation set. All the ratings corresponding to different values of K are averaged, and the averaged result is considered as the predicted rating for the target essay. 
+
+% \section{Experiment}
+% \subsection{Experiment Setup}
+
+% The ASAP data set is widely used in the AES community~\cite{Taghipour:2016, Tay:2018, Jin:2018, Wang:2018}).
+% It contains eight essay prompts and all the essays are originally written by middle-school English-speaking students.
+% More detailed description about ASAP data set can be seen in Table~\ref{font-t3}.
+
+% Following ~\cite{Taghipour:2016, Tay:2018, Wang:2018}), we use 5-fold cross validation to evaluate all the systems with a 60/20/20 split for training, validation and test sets.
+% Quadratic Weighted Kappa (QWK)\cite{kappa1996} is used as our evaluation metric, which is commonly used for evaluating AES systems and measuring the agreement between raters.
+
+
+% All essays are parsed by CoreNLP annotators.
+% To extract the semantic related neural features, we use the pre-trained 50-dimension word vector as the input of the multi-layer Bi-directional LSTM networks.
+% For POS features, the POS sequence of a sentence is used as the input.
+% For syntactic features, the input is the sequence of syntactic tags corresponding to each token.
+% For the combinations of features which include syntactic features, we use a three-layer Bi-directional LSTM networks.
+% For other combinations of features, we use a two-layer Bi-directional LSTM networks.
+% The output of each Bi-directional LSTM network will be fed through a feed-forward network, which transforms the vectors into a scalar.
+% The number of layers of feed-forward network is set to 2 or 3.
+% The number of hidden states of both Bi-directional LSTM and feed-forward network is set to 50.
+% During training stage for the neural network, we scale the essay ratings to range [0, 1], and rescaled back to the original prompt-specific range when computing the QWK metric or extracting neural network features.
+% We use Adam\cite{adam2014} optimizer to train the neural feature extractors with learning rate 0.01. 
+% For LambdaMART model, the depth of trees is amongst \{6, 8\} and the learning rate is amongst \{0.2, 0.4, 0.6\}, which are decided by the performance on validation set. 
+% We run the training and rating process five times, and simply ensemble the rating results by rule: when the average of ratings is larger than the median of original rating range, then assign the max rating to the target essay; if the average of ratings is smaller than the median of original rating range, then assign the minimum rating to the target essay; else the average of ratings is assigned to the target essay.
+% We then compare the performance between our approach and recent state-of-the-art approaches.
+
+% {\bf EASE}
+% Enhanced AI Scoring Engine (EASE) is the best open-source system that participated in the ASAP competition and ranked the third place among 154 participants.
+% EASE used handcrafted features and regression methods, which is described in ~\cite{Phandi:2015} . 
+
+% {\bf CNN/RNN/GRU/LSTM/CNN(10 runs) + LSTM(10 runs)}
+% In~\cite{Taghipour:2016}, different types of neural networks are studied and the state-of-the-art result is achieved.
+% In the CNN model, the dense representation of the input sequence is fed through the recurrent layer of the network.
+% In the RNN/GRU/LSTM model, the embeddings are fed through the basic RNN, GRU and LSTM units.
+% They also experimented on ensembling the results of 10 runs of CNN models and 10 runs of LSTM models, which led to their best result. 
+
+% {\bf SKIPFLOW}
+% \cite{Tay:2018} used SKIPFLOW networks to model the relationships between snapshots of the hidden representations of an LSTM.
+% The semantic relationships between multiple snapshots are used as auxiliary features for predicting.
+% There are two settings of their model corresponding to different composing types, which are denoted as SKIPFLOW LSTM (Bilinear) and SKIPFLOW LSTM (Tensor) respectively.
+% Their results lead the state-of-the-art performance. 
+
+% {\bf Dilated LSTM with Reinforcement Learning Framework}
+% \cite{Wang:2018} proposed a method using dilated LSTM network in a reinforcement learning framework.
+% They attempt to directly optimize the scorer by QWK which considers the rating schema.
+% The results show the effectiveness of their learning framework and essay representation for AES.
+
+
+\begin{table*}[h!]
+\begin{center}
+\scalebox{0.6}{
+\begin{tabular}{c|c|c}
+    \hline
+    ID & Context & Responses \\
+    \hline
+    \multirow{19}{*}{1} & \multirow{19}{*}{a} 
+    & Seq2Seq: \\ 
+    & & HRED: \\
+    & & CVAE: \\
+    & & DialoGPT: \\
+    & & Transformer: \\
+    & & CT-CVAE: \\
+    & & w/o c: \\
+    & & $a_1,a_2=(0,0)$: \\
+    & & $a_1,a_2=(1,0)$: \\
+    & & $a_1,a_2=(2,0)$: \\
+    & & $a_1,a_2=(3,0)$: \\
+    & & $a_1,a_2=(4,0)$: \\
+    & & $a_1,a_2=(5,0)$: \\
+    & & $a_1,a_2=(0,1)$: \\
+    & & $a_1,a_2=(1,1)$: \\
+    & & $a_1,a_2=(2,1)$: \\
+    & & $a_1,a_2=(3,1)$: \\
+    & & $a_1,a_2=(4,1)$: \\
+    & & $a_1,a_2=(5,1)$: \\
+    \hline
+    \multirow{19}{*}{2} & \multirow{19}{*}{b} 
+    & Seq2Seq: \\ 
+    & & HRED: \\
+    & & CVAE: \\
+    & & DialoGPT: \\
+    & & Transformer: \\
+    & & CT-CVAE: \\
+    & & w/o c: \\
+    & & $a_1,a_2=(0,0)$: \\
+    & & $a_1,a_2=(1,0)$: \\
+    & & $a_1,a_2=(2,0)$: \\
+    & & $a_1,a_2=(3,0)$: \\
+    & & $a_1,a_2=(4,0)$: \\
+    & & $a_1,a_2=(5,0)$: \\
+    & & $a_1,a_2=(0,1)$: \\
+    & & $a_1,a_2=(1,1)$: \\
+    & & $a_1,a_2=(2,1)$: \\
+    & & $a_1,a_2=(3,1)$: \\
+    & & $a_1,a_2=(4,1)$: \\
+    & & $a_1,a_2=(5,1)$: \\
+    \hline
+\end{tabular}}
+\end{center}
+\caption{\label{font-t5} Generated responses from all baselines and our model.}
+\end{table*}
+
+Compared to other models, our model has the advantage of using global information, which is crucial when there is insufficient data for each rating.
+From the reported results in Table~\ref{font-t4} and Table~\ref{font-t5}, we can see when the mean sample number correspond to one rating is less than 300, our model outperforms the state-of-the-art performance.
+Other models without using global information may suffered more from lack of data.
+As is shown in Table~\ref{font-t5}, our model outperforms others in prompt 1, 2, 8 and rank second in prompt 7 among all models when there is lack of data for ratings in those prompts. When there is enough data, our model also rank first for prompt 3 and perform well for prompt 4, 5 and 6.
+
+% As reported in Table~\ref{font-t5}, when all the prompts are considered in evaluation, the average performance of our ranking framework outperforms the state-of-the-art performance.
+%Taking all the prompts into consideration, the reason why our model perform not as good as the model reported in \cite{Tay:2018} may be that we simply use a multi-layer bi-directional LSTM to extract neural network features without any special structures to catch more complicated features for the essays, which is one of our future direction.
+
+\section{Related Work}
+Conditional variational autoencoder(CVAE) can include the effect from certain conditions based on its Bayesian architecture and are able to generate diverse texts or images.
+For dialogue generation, researchers view the dialog contexts as the basic conditional attributes and attempt incorporating more linguistic features to guide the latent variable learning.
+The approaches to include additional features can be categorized into two major directions.
+The one treats the features as posterior information which can be predicted based on the dialog contexts \cite{zhao2017learning, ke2018generating}.
+The other treats the features as prior information \cite{zhou2017mojitalk, li2021emoelicitor, song2019exploiting, wu2019guiding}, for training model to generate responses in accordance with any specific conditions.
+Similarly, these works has focused on the high-level attributes of utterances, the major challenge of which is the lack of large-scale, manually labeled text datasets.
+Our work only exploits easily computable low-level properties as prior information to explore its impact on dialogue.
+
+Recently, Transformers are considered in VAEs for storytelling \cite{wang2019t}, classification \cite{gururangan2019variational} and dialogue generation \cite{li2021emoelicitor}.
+Transformer architecture is more advanced than traditional RNN architecture.
+However, when using a decoder with strong fitting capability, the latent space tend to lose its expressive power and thus the entire CVAE model falls back to a vanilla Seq2Seq.
+To alleviate this issue, some approaches have been further developed, including conditional Wasserstein auto-encoder of DialogWAE \cite{gu2018dialogwae}, pre-training on a large text corpus \cite{li2020optimus}.
+our model allows latent variable z and additional features to directly affect the vector representations at each
+Transformer decoder block, which has more influence on language generation.
+
+
+
+
+
+
+
+
+
+
+
+
+% Traditional AES system mainly use classification, regression and ranking algorithms with handcrafted features to rate an essay.
+% \cite{Larkey:1998} use both classification and regression models in their AES system.
+% \cite{Rudner:2002} applied Bayesian classification model to AES .
+% \cite{Attali:2006} developed a regression model with a meaningful feature set for their AES system. 
+% \cite{Yannakoudakis:2011, Chen:2013}) used ranking approaches in their work, which outperformed classification and regression models.
+% \cite{Yannakoudakis:2011} proposed the first ranking approach in AES.
+% \cite{Chen:2013} is a listwise ranking method which uses global ranking information and outperforms classification and regression models.
+% \cite{Phandi:2015} proposed a domain adaption technique that uses Bayesian linear ridge regression in their system.
+
+% Many AES systems based on deep learning models are proposed in recent years.
+% \cite{Taghipour:2016} explored several RNNs which learned the relationship between an essay and its assigned rating without any handcrafted feature.
+% \cite{Alikaniotis:2016, Jin:2018} developed a multi-layer Bi-directional LSTM network to learn a better representation for the original essays.
+% \cite{Wang:2018} used dilated LSTM to encode an essay and proposed a reinforcement learning framework to optimize QWK metric directly.
+% \cite{Tay:2018} proposed the SKIPFLOW LSTM to extract neural coherence features.
+% Their approach outperforms the state-of-the-art result in ASAP data set.
+% \cite{Farag:2018} integrated and jointly trained the local coherence model with an LSTM model which is similar to \cite{Taghipour:2016}.
+% Their framework dealt well with both AES task and the task of flagging adversarial input. 
+ 
+\section{Conclusion and Future Work}
+In this paper, we propose a new CVAE model based on Transformer for dialogue response generation.
+Two controllable low-level sentence attributes are incorporated into our framework to improve the quality of generation.
+Our model integrates the advantages of both VAE and controllable text generation, which helps to generate diverse languages and reduce generic and irrelevant outputs.
+Experimental results prove the effectiveness of our framework.
+
+One of our future work is to explore more easily accessible and effective sentence features to improve generative dialogue system. 
+As we should decide the most appropriate conditions in inference stage, the performance of the matching model is equally important.
+We will investigate more effective approaches to assess the matching degree between the dialogue context and the generated response.
+
+
+
+
+% a unified ranking-based framework is proposed to combine both handcrafted features and neural features, which integrates the advantages of both two types of feature sets.
+% We make full use of global information in our framework.
+% Global information comes from the listwise ranking mechanism and weighted KNN process in scoring module.
+
+% In our current work, we simply use a multi-layer Bi-directional LSTM to extract neural features without any special structures to catch more complicated features for the essays.
+% One of our future work is to explore more effective sentence features by optimizing neural network structures.
+% Meanwhile, we will explore the effective approach to jointly train all neural networks and ranking model.
+
+\bibliography{emnlp-ijcnlp-2019}
+\bibliographystyle{acl_natbib}
+\end{document}

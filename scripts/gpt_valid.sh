@@ -1,8 +1,8 @@
 python ../parlai/scripts/eval_model.py \
     --datatype valid \
     --model hugging_face/gpt2 \
-    --task empathetic_dialogues \
-    --model-file ../../checkpoint/gpt2/empathetic_dialogues/model \
+    --task dailydialog,wizard_of_wikipedia,empathetic_dialogues,convai2 \
+    --model-file ../../checkpoint/gpt2/model \
     --skip-generation False \
     --batchsize 16 \
     --inference beam \

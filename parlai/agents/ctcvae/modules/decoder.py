@@ -254,8 +254,6 @@ class TransformerDecoder(nn.Module):
                 nn.Linear(self.d_model + opt['latentsize'], self.embedding_size),
                 nn.ReLU(),
             )
-        else:
-            self.o2e = nn.Linear(self.d_model, self.embedding_size, bias=True)
 
         self.ffn_size = opt['ffn_size']
         self.n_layers = (
@@ -327,9 +325,6 @@ class TransformerDecoder(nn.Module):
                     variant=self.variant,
                 )  # type: ignore
             )
-
-        self.input_layer = nn.Linear(self.embedding_size, self.d_model, bias=False)
-        nn.init.xavier_normal_(self.input_layer.weight)
 
     def forward_embedding(
         self,
@@ -462,8 +457,7 @@ class TransformerDecoder(nn.Module):
 
         if not self.opt['modulate']:
             tensor = torch.cat([tensor, latent_sample.unsqueeze(1).repeat(1, tensor.size(1), 1)], dim=-1)
-
-        tensor = self.o2e(tensor)
+            tensor = self.o2e(tensor)
 
         return tensor, new_incr_state
 
