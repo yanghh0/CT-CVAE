@@ -223,7 +223,7 @@ class CtcvaeAgent(TorchGeneratorAgent):
                     f, map_location=lambda cpu, _: cpu, pickle_module=parlai.utils.pickle
                 )
 
-            self.crossencoder_opt = Opt.load("/hy-tmp/crossencoder/model/model.opt")
+            self.crossencoder_opt = Opt.load("/hy-tmp/crossencoder/model.opt")
             self.crossencoder = CrossEncoderModule(self.crossencoder_opt, self.dict, self.NULL_IDX)
             self.crossencoder.load_state_dict(states['model'])
             self.crossencoder.cuda()
@@ -291,17 +291,30 @@ class CtcvaeAgent(TorchGeneratorAgent):
                         torch.ones_like(batch.class_labels_symbol).fill_(self.cond_sym_space_id),
                     ]
                 elif self.flag == 'parallel':
-                    batch.text_vec = batch.text_vec.repeat(len(Specific_dict) * 2, 1)
-                    batch.turn_vec = batch.turn_vec.repeat(len(Specific_dict) * 2, 1)
-                    batch.role_vec = batch.role_vec.repeat(len(Specific_dict) * 2, 1)
-                    batch.full_text_vec = batch.full_text_vec.repeat(len(Specific_dict) * 2, 1)
-                    batch.add_start_end_text_vec = batch.add_start_end_text_vec.repeat(len(Specific_dict) * 2, 1)
+                    # batch.text_vec = batch.text_vec.repeat(len(Specific_dict) * 2, 1)
+                    batch.text_vec = batch.text_vec.repeat(8, 1)
+                    # batch.turn_vec = batch.turn_vec.repeat(len(Specific_dict) * 2, 1)
+                    batch.turn_vec = batch.turn_vec.repeat(8, 1)
+                    # batch.role_vec = batch.role_vec.repeat(len(Specific_dict) * 2, 1)
+                    batch.role_vec = batch.role_vec.repeat(8, 1)
+                    # batch.full_text_vec = batch.full_text_vec.repeat(len(Specific_dict) * 2, 1)
+                    batch.full_text_vec = batch.full_text_vec.repeat(8, 1)
+                    # batch.add_start_end_text_vec = batch.add_start_end_text_vec.repeat(len(Specific_dict) * 2, 1)
+                    batch.add_start_end_text_vec = batch.add_start_end_text_vec.repeat(8, 1)
                     class_labels = [
-                        torch.LongTensor([0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5]).cuda(),
-                        torch.LongTensor([1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]).cuda(),
+                        torch.LongTensor([1, 1, 2, 2, 3, 3, 4, 4]).cuda(),
+                        torch.LongTensor([1, 0, 1, 0, 1, 0, 1, 0]).cuda(),
                     ]
         else:
             class_labels = None
+
+        if self.opt['datatype'] == 'test':
+            batch.post_text_vec = None
+            batch.post_turn_vec = None
+            batch.post_role_vec = None
+            batch.reverse_post_text_vec = None
+            batch.reverse_post_turn_vec = None
+            batch.reverse_post_role_vec = None
 
         return (batch.text_vec, 
                 batch.post_text_vec,
@@ -498,7 +511,7 @@ class CtcvaeAgent(TorchGeneratorAgent):
 
         if self.opt['datatype'] == 'train' and not return_output:
             self.global_t += 1
-            kl_weights = min(self.global_t / 250000.0, 1.2)
+            kl_weights = min(self.global_t / 100000.0, 1.2)
         else:
             kl_weights = 1.2
 
@@ -691,10 +704,7 @@ class CtcvaeAgent(TorchGeneratorAgent):
                 scores = scores.squeeze(1)
 
                 out, idx = torch.topk(scores, k=2, dim=0)
-                if out[0].item() - out[1].item() > 1.0:
-                    select_condition = idx[0].item()
-                else:
-                    select_condition = torch.max(idx).item()
+                select_condition = torch.min(idx).item()
 
                 beam_preds_scores = [_beam_preds_scores[select_condition]]
                 preds = (_preds[select_condition], )
@@ -745,6 +755,44 @@ class CtcvaeAgent(TorchGeneratorAgent):
             cand_choices, cand_scores = self.rank_eval_label_candidates(batch, bsz)
 
         text = [self._v2t(p) for p in preds] if preds is not None else None
+
+        if self.opt['datatype'] == 'valid':
+            from parlai.utils.misc import msg_to_str
+            act = {
+                'text': '',
+                'labels': [''],
+                'episode_done': True,
+            }
+
+            context_str_list = [self._v2t(p) for p in batch.full_text_vec] if batch.full_text_vec is not None else None
+            label_str_list = [self._v2t(p) for p in batch.label_vec] if batch.label_vec is not None else None
+
+            for pred_str in text:
+                pred_str_length = len(pred_str.split())
+                self.total_length += pred_str_length
+                self.total_sentence += 1
+                if pred_str_length > self.max_length:
+                    self.max_length = pred_str_length
+                if pred_str_length < self.min_length:
+                    self.min_length = pred_str_length
+                try:
+                    self._length[pred_str_length] += 1
+                except Exception as e:
+                    print(pred_str)
+
+            print(self.total_length * 1.0 / self.total_sentence)
+            print(self.total_length, self.total_sentence, self.max_length, self.min_length)
+            print(self._length)
+
+            with open("response.txt", "a") as fs:
+                for cnt, context_str in enumerate(context_str_list):
+                    if '__unk__' in context_str or '__unk__' in text[cnt] or '__unk__' in label_str_list[cnt]:
+                        continue
+                    act['text'] = context_str
+                    act['labels'] = [text[cnt] + " ==GT: " + label_str_list[cnt]]
+                    txt = msg_to_str(act)
+                    fs.write(txt + '\n')
+                    fs.write('\n')
 
         if text and self.compute_tokenized_bleu:
             # compute additional bleu scores

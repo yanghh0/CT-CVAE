@@ -26,7 +26,6 @@ from parlai.agents.transformer.modules.modular import swappable
 from parlai.core.opt import Opt
 from parlai.utils.misc import warn_once
 from parlai.utils.torch import PipelineHelper
-from parlai.utils.io import PathManager
 
 
 @swappable(
@@ -271,6 +270,11 @@ class TransformerDecoder(nn.Module):
                 )  # type: ignore
             )
 
+        self.o2e = nn.Linear(self.d_model, self.embedding_size, bias=True)
+        self.input_layer = nn.Linear(self.embedding_size, self.d_model, bias=False)
+        self._dropout = nn.Dropout(p=0.1)
+        nn.init.xavier_normal_(self.input_layer.weight)
+
     def forward_embedding(
         self,
         input: torch.LongTensor,
@@ -291,6 +295,7 @@ class TransformerDecoder(nn.Module):
             embeded input and mask
         """
         tensor = self.embeddings(input)
+        tensor = self.input_layer(tensor)
         if self.embeddings_scale:
             tensor = tensor * np.sqrt(self.dim)
         if self.variant == 'xlm':
@@ -390,6 +395,8 @@ class TransformerDecoder(nn.Module):
 
         if self.variant == 'prelayernorm':
             tensor = self.norm_embeddings(tensor)
+
+        tensor = self._dropout(self.o2e(tensor))
 
         return tensor, new_incr_state
 

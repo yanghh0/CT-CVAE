@@ -33,7 +33,6 @@ from parlai.core.opt import Opt
 from parlai.core.torch_agent import DictionaryAgent
 from parlai.core.torch_generator_agent import TorchGeneratorModel
 from parlai.utils.torch import neginf
-from parlai.utils.io import PathManager
 
 
 @swappable(encoder=TransformerEncoder, decoder=TransformerDecoder)
@@ -90,11 +89,6 @@ class CtcvaeModel(TorchGeneratorModel):
         self.turn_embeddings = torch.nn.Embedding(50, opt['d_model'])
         self.role_embeddings = torch.nn.Embedding(2, opt['d_model'])
 
-        import parlai.utils.pickle
-        with PathManager.open("/root/yanghh/checkpoint/blender90M/pretrain/model", 'rb') as f:
-            states = torch.load(f, map_location=lambda cpu, _: cpu, pickle_module=parlai.utils.pickle)
-        self.embeddings.weight.data.copy_(states['model']['encoder.embeddings.weight'].data)
-
         self.encoder = self.build_encoder(
             opt,
             dictionary,
@@ -113,184 +107,7 @@ class CtcvaeModel(TorchGeneratorModel):
             decoder_class=self.swappables.decoder,  # type: ignore
         )
 
-        self.encoder.position_embeddings.weight.data.copy_(states['model']['encoder.position_embeddings.weight'].data)
-        self.encoder.norm_embeddings.weight.data.copy_(states['model']['encoder.norm_embeddings.weight'].data)
-        self.decoder.norm_embeddings.weight.data.copy_(states['model']['decoder.norm_embeddings.weight'].data)
-        self.encoder.layers[0].attention.q_lin.weight.data.copy_(states['model']['encoder.layers.0.attention.q_lin.weight'].data)
-        self.encoder.layers[0].attention.k_lin.weight.data.copy_(states['model']['encoder.layers.0.attention.k_lin.weight'].data)
-        self.encoder.layers[0].attention.v_lin.weight.data.copy_(states['model']['encoder.layers.0.attention.v_lin.weight'].data)
-        self.encoder.layers[0].attention.out_lin.weight.data.copy_(states['model']['encoder.layers.0.attention.out_lin.weight'].data)
-        self.encoder.layers[0].norm1.weight.data.copy_(states['model']['encoder.layers.0.norm1.weight'].data)
-        self.encoder.layers[0].norm2.weight.data.copy_(states['model']['encoder.layers.0.norm2.weight'].data)
-
-        self.encoder.layers[1].attention.q_lin.weight.data.copy_(states['model']['encoder.layers.1.attention.q_lin.weight'].data)
-        self.encoder.layers[1].attention.k_lin.weight.data.copy_(states['model']['encoder.layers.1.attention.k_lin.weight'].data)
-        self.encoder.layers[1].attention.v_lin.weight.data.copy_(states['model']['encoder.layers.1.attention.v_lin.weight'].data)
-        self.encoder.layers[1].attention.out_lin.weight.data.copy_(states['model']['encoder.layers.1.attention.out_lin.weight'].data)
-        self.encoder.layers[1].norm1.weight.data.copy_(states['model']['encoder.layers.1.norm1.weight'].data)
-        self.encoder.layers[1].norm2.weight.data.copy_(states['model']['encoder.layers.1.norm2.weight'].data)
-
-        self.encoder.layers[2].attention.q_lin.weight.data.copy_(states['model']['encoder.layers.2.attention.q_lin.weight'].data)
-        self.encoder.layers[2].attention.k_lin.weight.data.copy_(states['model']['encoder.layers.2.attention.k_lin.weight'].data)
-        self.encoder.layers[2].attention.v_lin.weight.data.copy_(states['model']['encoder.layers.2.attention.v_lin.weight'].data)
-        self.encoder.layers[2].attention.out_lin.weight.data.copy_(states['model']['encoder.layers.2.attention.out_lin.weight'].data)
-        self.encoder.layers[2].norm1.weight.data.copy_(states['model']['encoder.layers.2.norm1.weight'].data)
-        self.encoder.layers[2].norm2.weight.data.copy_(states['model']['encoder.layers.2.norm2.weight'].data)
-
-        self.encoder.layers[3].attention.q_lin.weight.data.copy_(states['model']['encoder.layers.3.attention.q_lin.weight'].data)
-        self.encoder.layers[3].attention.k_lin.weight.data.copy_(states['model']['encoder.layers.3.attention.k_lin.weight'].data)
-        self.encoder.layers[3].attention.v_lin.weight.data.copy_(states['model']['encoder.layers.3.attention.v_lin.weight'].data)
-        self.encoder.layers[3].attention.out_lin.weight.data.copy_(states['model']['encoder.layers.3.attention.out_lin.weight'].data)
-        self.encoder.layers[3].norm1.weight.data.copy_(states['model']['encoder.layers.3.norm1.weight'].data)
-        self.encoder.layers[3].norm2.weight.data.copy_(states['model']['encoder.layers.3.norm2.weight'].data)
-
-        self.encoder.layers[4].attention.q_lin.weight.data.copy_(states['model']['encoder.layers.4.attention.q_lin.weight'].data)
-        self.encoder.layers[4].attention.k_lin.weight.data.copy_(states['model']['encoder.layers.4.attention.k_lin.weight'].data)
-        self.encoder.layers[4].attention.v_lin.weight.data.copy_(states['model']['encoder.layers.4.attention.v_lin.weight'].data)
-        self.encoder.layers[4].attention.out_lin.weight.data.copy_(states['model']['encoder.layers.4.attention.out_lin.weight'].data)
-        self.encoder.layers[4].norm1.weight.data.copy_(states['model']['encoder.layers.4.norm1.weight'].data)
-        self.encoder.layers[4].norm2.weight.data.copy_(states['model']['encoder.layers.4.norm2.weight'].data)
-
-        self.encoder.layers[5].attention.q_lin.weight.data.copy_(states['model']['encoder.layers.5.attention.q_lin.weight'].data)
-        self.encoder.layers[5].attention.k_lin.weight.data.copy_(states['model']['encoder.layers.5.attention.k_lin.weight'].data)
-        self.encoder.layers[5].attention.v_lin.weight.data.copy_(states['model']['encoder.layers.5.attention.v_lin.weight'].data)
-        self.encoder.layers[5].attention.out_lin.weight.data.copy_(states['model']['encoder.layers.5.attention.out_lin.weight'].data)
-        self.encoder.layers[5].norm1.weight.data.copy_(states['model']['encoder.layers.5.norm1.weight'].data)
-        self.encoder.layers[5].norm2.weight.data.copy_(states['model']['encoder.layers.5.norm2.weight'].data)
-
-        self.encoder.layers[0].ffn.lin1.weight.data.copy_(states['model']['encoder.layers.0.ffn.lin1.weight'].data)
-        self.encoder.layers[0].ffn.lin2.weight.data.copy_(states['model']['encoder.layers.0.ffn.lin2.weight'].data)
-        self.encoder.layers[1].ffn.lin1.weight.data.copy_(states['model']['encoder.layers.1.ffn.lin1.weight'].data)
-        self.encoder.layers[1].ffn.lin2.weight.data.copy_(states['model']['encoder.layers.1.ffn.lin2.weight'].data)
-        self.encoder.layers[2].ffn.lin1.weight.data.copy_(states['model']['encoder.layers.2.ffn.lin1.weight'].data)
-        self.encoder.layers[2].ffn.lin2.weight.data.copy_(states['model']['encoder.layers.2.ffn.lin2.weight'].data)
-        self.encoder.layers[3].ffn.lin1.weight.data.copy_(states['model']['encoder.layers.3.ffn.lin1.weight'].data)
-        self.encoder.layers[3].ffn.lin2.weight.data.copy_(states['model']['encoder.layers.3.ffn.lin2.weight'].data)
-        self.encoder.layers[4].ffn.lin1.weight.data.copy_(states['model']['encoder.layers.4.ffn.lin1.weight'].data)
-        self.encoder.layers[4].ffn.lin2.weight.data.copy_(states['model']['encoder.layers.4.ffn.lin2.weight'].data)
-        self.encoder.layers[5].ffn.lin1.weight.data.copy_(states['model']['encoder.layers.5.ffn.lin1.weight'].data)
-        self.encoder.layers[5].ffn.lin2.weight.data.copy_(states['model']['encoder.layers.5.ffn.lin2.weight'].data)
-
-        self.decoder.layers[0].ffn.lin1.weight.data.copy_(states['model']['decoder.layers.0.ffn.lin1.weight'].data)
-        self.decoder.layers[0].ffn.lin2.weight.data.copy_(states['model']['decoder.layers.0.ffn.lin2.weight'].data)
-        self.decoder.layers[1].ffn.lin1.weight.data.copy_(states['model']['decoder.layers.1.ffn.lin1.weight'].data)
-        self.decoder.layers[1].ffn.lin2.weight.data.copy_(states['model']['decoder.layers.1.ffn.lin2.weight'].data)
-        self.decoder.layers[2].ffn.lin1.weight.data.copy_(states['model']['decoder.layers.2.ffn.lin1.weight'].data)
-        self.decoder.layers[2].ffn.lin2.weight.data.copy_(states['model']['decoder.layers.2.ffn.lin2.weight'].data)
-        self.decoder.layers[3].ffn.lin1.weight.data.copy_(states['model']['decoder.layers.3.ffn.lin1.weight'].data)
-        self.decoder.layers[3].ffn.lin2.weight.data.copy_(states['model']['decoder.layers.3.ffn.lin2.weight'].data)
-        self.decoder.layers[4].ffn.lin1.weight.data.copy_(states['model']['decoder.layers.4.ffn.lin1.weight'].data)
-        self.decoder.layers[4].ffn.lin2.weight.data.copy_(states['model']['decoder.layers.4.ffn.lin2.weight'].data)
-        self.decoder.layers[5].ffn.lin1.weight.data.copy_(states['model']['decoder.layers.5.ffn.lin1.weight'].data)
-        self.decoder.layers[5].ffn.lin2.weight.data.copy_(states['model']['decoder.layers.5.ffn.lin2.weight'].data)
-        self.decoder.layers[6].ffn.lin1.weight.data.copy_(states['model']['decoder.layers.6.ffn.lin1.weight'].data)
-        self.decoder.layers[6].ffn.lin2.weight.data.copy_(states['model']['decoder.layers.6.ffn.lin2.weight'].data)
-        self.decoder.layers[7].ffn.lin1.weight.data.copy_(states['model']['decoder.layers.7.ffn.lin1.weight'].data)
-        self.decoder.layers[7].ffn.lin2.weight.data.copy_(states['model']['decoder.layers.7.ffn.lin2.weight'].data)
-
-        self.decoder.layers[0].self_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.0.self_attention.q_lin.weight'].data)
-        self.decoder.layers[0].self_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.0.self_attention.k_lin.weight'].data)
-        self.decoder.layers[0].self_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.0.self_attention.v_lin.weight'].data)
-        self.decoder.layers[0].self_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.0.self_attention.out_lin.weight'].data)
-        self.decoder.layers[0].norm1.weight.data.copy_(states['model']['decoder.layers.0.norm1.weight'].data)
-        self.decoder.layers[0].norm2.weight.data.copy_(states['model']['decoder.layers.0.norm2.weight'].data)
-        self.decoder.layers[0].norm3.weight.data.copy_(states['model']['decoder.layers.0.norm3.weight'].data)
-
-        self.decoder.layers[1].self_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.1.self_attention.q_lin.weight'].data)
-        self.decoder.layers[1].self_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.1.self_attention.k_lin.weight'].data)
-        self.decoder.layers[1].self_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.1.self_attention.v_lin.weight'].data)
-        self.decoder.layers[1].self_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.1.self_attention.out_lin.weight'].data)
-        self.decoder.layers[1].norm1.weight.data.copy_(states['model']['decoder.layers.1.norm1.weight'].data)
-        self.decoder.layers[1].norm2.weight.data.copy_(states['model']['decoder.layers.1.norm2.weight'].data)
-        self.decoder.layers[1].norm3.weight.data.copy_(states['model']['decoder.layers.1.norm3.weight'].data)
-
-        self.decoder.layers[2].self_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.2.self_attention.q_lin.weight'].data)
-        self.decoder.layers[2].self_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.2.self_attention.k_lin.weight'].data)
-        self.decoder.layers[2].self_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.2.self_attention.v_lin.weight'].data)
-        self.decoder.layers[2].self_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.2.self_attention.out_lin.weight'].data)
-        self.decoder.layers[2].norm1.weight.data.copy_(states['model']['decoder.layers.2.norm1.weight'].data)
-        self.decoder.layers[2].norm2.weight.data.copy_(states['model']['decoder.layers.2.norm2.weight'].data)
-        self.decoder.layers[2].norm3.weight.data.copy_(states['model']['decoder.layers.2.norm3.weight'].data)
-
-        self.decoder.layers[3].self_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.3.self_attention.q_lin.weight'].data)
-        self.decoder.layers[3].self_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.3.self_attention.k_lin.weight'].data)
-        self.decoder.layers[3].self_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.3.self_attention.v_lin.weight'].data)
-        self.decoder.layers[3].self_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.3.self_attention.out_lin.weight'].data)
-        self.decoder.layers[3].norm1.weight.data.copy_(states['model']['decoder.layers.3.norm1.weight'].data)
-        self.decoder.layers[3].norm2.weight.data.copy_(states['model']['decoder.layers.3.norm2.weight'].data)
-        self.decoder.layers[3].norm3.weight.data.copy_(states['model']['decoder.layers.3.norm3.weight'].data)
-
-        self.decoder.layers[4].self_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.4.self_attention.q_lin.weight'].data)
-        self.decoder.layers[4].self_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.4.self_attention.k_lin.weight'].data)
-        self.decoder.layers[4].self_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.4.self_attention.v_lin.weight'].data)
-        self.decoder.layers[4].self_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.4.self_attention.out_lin.weight'].data)
-        self.decoder.layers[4].norm1.weight.data.copy_(states['model']['decoder.layers.4.norm1.weight'].data)
-        self.decoder.layers[4].norm2.weight.data.copy_(states['model']['decoder.layers.4.norm2.weight'].data)
-        self.decoder.layers[4].norm3.weight.data.copy_(states['model']['decoder.layers.4.norm3.weight'].data)
-        self.decoder.layers[5].norm1.weight.data.copy_(states['model']['decoder.layers.5.norm1.weight'].data)
-        self.decoder.layers[5].norm2.weight.data.copy_(states['model']['decoder.layers.5.norm2.weight'].data)
-        self.decoder.layers[5].norm3.weight.data.copy_(states['model']['decoder.layers.5.norm3.weight'].data)
-        self.decoder.layers[6].norm1.weight.data.copy_(states['model']['decoder.layers.6.norm1.weight'].data)
-        self.decoder.layers[6].norm2.weight.data.copy_(states['model']['decoder.layers.6.norm2.weight'].data)
-        self.decoder.layers[6].norm3.weight.data.copy_(states['model']['decoder.layers.6.norm3.weight'].data)
-        self.decoder.layers[7].norm1.weight.data.copy_(states['model']['decoder.layers.7.norm1.weight'].data)
-        self.decoder.layers[7].norm2.weight.data.copy_(states['model']['decoder.layers.7.norm2.weight'].data)
-        self.decoder.layers[7].norm3.weight.data.copy_(states['model']['decoder.layers.7.norm3.weight'].data)
-
-        self.decoder.layers[5].self_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.5.self_attention.q_lin.weight'].data)
-        self.decoder.layers[5].self_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.5.self_attention.k_lin.weight'].data)
-        self.decoder.layers[5].self_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.5.self_attention.v_lin.weight'].data)
-        self.decoder.layers[5].self_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.5.self_attention.out_lin.weight'].data)
-
-        self.decoder.layers[6].self_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.6.self_attention.q_lin.weight'].data)
-        self.decoder.layers[6].self_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.6.self_attention.k_lin.weight'].data)
-        self.decoder.layers[6].self_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.6.self_attention.v_lin.weight'].data)
-        self.decoder.layers[6].self_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.6.self_attention.out_lin.weight'].data)
-
-        self.decoder.layers[7].self_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.7.self_attention.q_lin.weight'].data)
-        self.decoder.layers[7].self_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.7.self_attention.k_lin.weight'].data)
-        self.decoder.layers[7].self_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.7.self_attention.v_lin.weight'].data)
-        self.decoder.layers[7].self_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.7.self_attention.out_lin.weight'].data)
-
-        self.decoder.layers[0].encoder_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.0.encoder_attention.q_lin.weight'].data)
-        self.decoder.layers[0].encoder_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.0.encoder_attention.k_lin.weight'].data)
-        self.decoder.layers[0].encoder_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.0.encoder_attention.v_lin.weight'].data)
-        self.decoder.layers[0].encoder_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.0.encoder_attention.out_lin.weight'].data)
-
-        self.decoder.layers[1].encoder_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.1.encoder_attention.q_lin.weight'].data)
-        self.decoder.layers[1].encoder_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.1.encoder_attention.k_lin.weight'].data)
-        self.decoder.layers[1].encoder_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.1.encoder_attention.v_lin.weight'].data)
-        self.decoder.layers[1].encoder_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.1.encoder_attention.out_lin.weight'].data)
-
-        self.decoder.layers[2].encoder_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.2.encoder_attention.q_lin.weight'].data)
-        self.decoder.layers[2].encoder_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.2.encoder_attention.k_lin.weight'].data)
-        self.decoder.layers[2].encoder_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.2.encoder_attention.v_lin.weight'].data)
-        self.decoder.layers[2].encoder_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.2.encoder_attention.out_lin.weight'].data)
-
-        self.decoder.layers[3].encoder_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.3.encoder_attention.q_lin.weight'].data)
-        self.decoder.layers[3].encoder_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.3.encoder_attention.k_lin.weight'].data)
-        self.decoder.layers[3].encoder_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.3.encoder_attention.v_lin.weight'].data)
-        self.decoder.layers[3].encoder_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.3.encoder_attention.out_lin.weight'].data)
-
-        self.decoder.layers[4].encoder_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.4.encoder_attention.q_lin.weight'].data)
-        self.decoder.layers[4].encoder_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.4.encoder_attention.k_lin.weight'].data)
-        self.decoder.layers[4].encoder_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.4.encoder_attention.v_lin.weight'].data)
-        self.decoder.layers[4].encoder_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.4.encoder_attention.out_lin.weight'].data)
-
-        self.decoder.layers[5].encoder_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.5.encoder_attention.q_lin.weight'].data)
-        self.decoder.layers[5].encoder_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.5.encoder_attention.k_lin.weight'].data)
-        self.decoder.layers[5].encoder_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.5.encoder_attention.v_lin.weight'].data)
-        self.decoder.layers[5].encoder_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.5.encoder_attention.out_lin.weight'].data)
-
-        self.decoder.layers[6].encoder_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.6.encoder_attention.q_lin.weight'].data)
-        self.decoder.layers[6].encoder_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.6.encoder_attention.k_lin.weight'].data)
-        self.decoder.layers[6].encoder_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.6.encoder_attention.v_lin.weight'].data)
-        self.decoder.layers[6].encoder_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.6.encoder_attention.out_lin.weight'].data)
-
-        self.decoder.layers[7].encoder_attention.q_lin.weight.data.copy_(states['model']['decoder.layers.7.encoder_attention.q_lin.weight'].data)
-        self.decoder.layers[7].encoder_attention.k_lin.weight.data.copy_(states['model']['decoder.layers.7.encoder_attention.k_lin.weight'].data)
-        self.decoder.layers[7].encoder_attention.v_lin.weight.data.copy_(states['model']['decoder.layers.7.encoder_attention.v_lin.weight'].data)
-        self.decoder.layers[7].encoder_attention.out_lin.weight.data.copy_(states['model']['decoder.layers.7.encoder_attention.out_lin.weight'].data)
+        self.encoder.input_layer.weight = self.decoder.input_layer.weight
 
     def reorder_encoder_states(self, encoder_states, indices):
         """

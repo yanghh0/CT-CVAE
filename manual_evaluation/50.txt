@@ -1,0 +1,600 @@
+1.
+text:
+	a. what qualifications should a reporter have ?
+	b. as a reporter , he must have acute insight and language skills . at the same time , he must have good judgment , the respect for his job and tactical cooperation with others .
+	a. can you work under pressure ? you know , people working here are all busy everyday since we ' re daily newspaper .	
+labels:
+    DialoGPT: Yes, I can.
+    Blender90M: yes , i can .
+    TCVAE: yes , of course .
+    CTCVAE: yes , i know . but i am not in the mood for this position , and i can ' t be able to work in the office .
+    GroundTruth: i think i ' ve got used to work under pressure . i will adjust myself to the step of your newspaper quickly .
+
+2.
+text:
+	a. i ' d like to open a current account .
+	b. certainly . may i see your social security and your id , please .
+	a. here you are . i wonder how much interest can i earn from a current account .	
+labels:
+	DialoGPT: You can earn up to 100,000 RIB a year.
+	Blender90M: i ' m not sure . 
+	TCVAE: yes . i want to open 1 , 000 rib to open 0 .
+	CTCVAE: it depends on how much it is .
+	GroundTruth: oh , current accounts don ' t pay out interest .
+
+3.
+text:
+	a. good morning , sir . is there a bank near here ?
+	b. there is one . 5 blocks away from here ?
+	a. well , that ' s too far . can you change some money for me ?	
+labels:
+    DialoGPT: No problem.
+    Blender90M: no problem .
+    TCVAE: of course . how much would you like to change ?
+    CTCVAE: yes , of course . is that all ?
+    GroundTruth: surely , of course . what kind of currency have you got ?
+
+4.
+text:
+	a. excuse me , sir . you can ' t park here .
+	b. i am just waiting for my friends . it won ' t be long .
+	a. sir , the curb here is not for parking .	
+labels:
+	DialoGPT: Oh, I see.
+	Blender90M: oh , i see .
+	TCVAE: thank you , where shall i be ?
+	CTCVAE: oh , i ' m sorry to hear that . thank you .
+	GroundTruth: but i didn ' t see the sign , ma ' am .
+
+5.
+text:
+	a. are you a goal - oriented person ? 
+	b. yes , i am . i always make a plan before i do anything .
+	a. where do you want to be in 5 years ?	
+labels:
+    DialoGPT: I would like to be a teacher.
+    Blender90M: i ' d like to be a doctor .
+    TCVAE: i want to stay in my own company .
+    CTCVAE: i ' m afraid i can ' t get up to work until i get married .
+    GroundTruth: i don ' t want to have a specific title . i just want to enjoy what i am doing .
+
+6.
+text:
+	a. i ' d like to taste some local dishes . what would you recommend ?
+	b. that ' s fine . you must try this dish . 
+	a. could you tell me how this thing is cooked ?	
+labels:
+    DialoGPT: Sure. Let me show you.
+    Blender90M: of course . it ' s a traditional chinese dish .
+    TCVAE: well , it ' s delicious .
+    CTCVAE: it tastes good . each one is chinese and traditional chinese dishes .
+    GroundTruth: it ' s fish steamed and served with our special sauce .
+
+
+7.
+text:
+	a. good morning , helen .
+	b. good morning , steven .
+	a. so , what ' s the status of our advertising campaign ?	
+labels:
+    DialoGPT: I'm not sure.
+    Blender90M: i ' m not sure .
+    TCVAE: well , i ' m calling to hear that .
+    CTCVAE: i think the government is very strong and efficient .
+    GroundTruth: it ' ll be a national campaign starting next week .
+
+8.
+text:
+	a. excuse me , but please empty your pockets of all the metal things and put them in this tray .
+	b. including my keys ?
+	a. yes , and please step over there .	
+labels:
+    DialoGPT: Here you are.
+    Blender90M: ok .
+    TCVAE: thank you .
+    CTCVAE: all right , what time is the pack ?
+    GroundTruth: all right . what shall i do now ?
+
+9.
+text:
+	a. why didn ' t you go to school yesterday ?
+	b. i stayed home because i wasn ' t feeling well .
+	a. what was your problem ?	
+labels:
+    DialoGPT: I had a bad headache.
+    Blender90M: i had a bad headache .
+    TCVAE: i went to school this afternoon .
+    CTCVAE: i ' ve got a fever .
+    GroundTruth: my stomach was bothering me .
+
+10.
+text:
+	a. hi , jack , we are having a party tonight , wanna coming enjoy us ? you can bring your girlfriend , tina . 
+	b. i don ' t have a girlfriend . i ' m single .
+	a. oh , that ' s right . well , there are going to be many beautiful girls at the party tonight , anyway .	
+labels:
+    DialoGPT: That's true.
+    Blender90M: really ? i ' ve never heard of that .
+    TCVAE: well , i ' d like to see her at home .
+    CTCVAE: i know that . but it ' s not convenient for me to get dating , but i ' ve been really busy .
+    GroundTruth:  no , i like being single . i never thought lonely , i ' m focus on my career . maybe i ' ll start to look for my girl when i achieve success .
+
+11.
+text:
+	a. i ' m glad these batteries are on sale .
+	b. i ' m sorry . these batteries are not on sale . 
+	a. but that ' s what the ad said .	
+labels:
+    DialoGPT: But the price is too high.
+    Blender90M: i ' ll take one .
+    TCVAE: well , it ' s going to be $ 180 a month .
+    CTCVAE: There ' s no problem at the price . if you buy it , we ' ll buy it for you .
+    GroundTruth: i ' m sorry . if you look at the ad again , you ' ll see that the other brand is on sale .
+
+12.
+text:
+	a. is there anything i can do for you ?
+	b. i ' m interested in taking a tour to sydney .
+	a. well , we have a package tour there .	
+labels:
+    DialoGPT: How much is it?
+    Blender90M: how much is it ?
+    TCVAE: what ' s the price ?
+    CTCVAE: what package do you have ?
+    GroundTruth: how much does it cost ?
+
+13.
+text:
+	a. is everything to your satisfaction ?
+	b. no , the steak was recommended , but it is not very fresh .
+	a. oh , sorry to hear that . this is quite unusual . i will look into the matter .	
+labels:
+    DialoGPT: Thank you.
+    Blender90M: thank you .
+    TCVAE: that ' s fine .
+    CTCVAE: i ' m sorry .
+    GroundTruth: this is very annoying .
+
+14.
+text:
+	a. why is the car before us stopping ?
+	b. what ' s going on ?
+	a. look . two cars are standing right in the middle of the road and the drivers are shouting rude words to each other . that ' s why that car stops .	
+labels:
+    DialoGPT: What do you mean?
+    Blender90M: i can ' t believe it .
+    TCVAE: well , it ' s easy to drive to the car , and the road is still loud .
+    CTCVAE: there ' s nothing wrong with them .
+    GroundTruth: more and more people easily get irritated while driving.
+
+15.
+text:
+	a. you ' re looking rather pale , why ?
+	b. i couldn ' t sleep well recently .
+	a. you ' d get plenty of sleep for you work so hard .	
+labels:
+    DialoGPT: I hope so.
+    Blender90M: thank you .
+    TCVAE: i feel well , doctor .
+    CTCVAE: maybe you don't get up at the same time .
+    GroundTruth: i always drink too much wine in the evening .
+
+16.
+text:
+	a. i ' m interested in teaching at your school .
+	b. great . are you a qualified teacher ?
+	a. yes .	
+labels:
+    DialoGPT: How long have you been teaching?
+    Blender90M: how long have you been teaching ?
+    TCVAE: what kind of teaching certificate did you learn ?
+    CTCVAE: how many courses have you had ?
+    GroundTruth: what kind of teaching certificate do you have ?
+
+17.
+text:
+	a. tony , could you tell me if there are any special rules about the job ?
+	b. working hours are from 8 : 30 a . m . to 5 : 00 p . m . be sure not to be late or absent . report to the manager by filling in the ' monthly report ' every month .
+	a. is there anything else ? how about my salary ?	
+labels:
+    DialoGPT: No, that's it.
+    Blender90M: no , that ' s all .
+    TCVAE: you ' ll have to pay the amount of your salary .
+    CTCVAE: in that case , you ' ll be fined by the end of the month . in addition , you will have to pay 3 , 000 yuan per month , including a bonus .
+    GroundTruth: our company has a strict and reasonable salary standard . on the 20th day of every month , you can get your salary on time . benefits depend upon the length of service and the employee ' s past attendance record .
+
+18.
+text:
+	a. hello . excuse me .
+	b. yes . can i help you ?
+	a. do you remember me ? i just had lunch here a half hour ago .	
+labels:
+    DialoGPT: Yes, I remember you.
+    Blender90M: yes , i do .
+    TCVAE: sorry , sir . what are you busy now ?
+    CTCVAE: of course .
+    GroundTruth: of course i remember you .
+
+19.
+text:
+	a. hello . may i speak to jerry , please ?
+	b. sorry , but he is out for lunch right now .
+	a. i see . can you give me some idea how long he ' ll be back ?	
+labels:
+    DialoGPT: He will be back in about an hour.
+    Blender90M: as soon as possible . 
+    TCVAE: let ' s call him back later .
+    CTCVAE: well , let me take a look at him back tomorrow . i ' ll give him a call next week , and let him know if he ' s free , he will be back for you .
+    GroundTruth: i think he will be back around 2 : 00 . if you like , please leave your name and phone number , i ' ll have him call you as soon as he comes back .
+
+20.
+text:
+	a. jack , let ' s go !
+	b. oh , you are out of breath ! what happened ?
+	a. some people are wildly shooting on the next street . we must leave here as soon as possible !	
+labels:
+    DialoGPT: What are you talking about?
+    Blender90M: what ' s the matter ?
+    TCVAE: well , i don ' t think you ' re stalking me .
+    CTCVAE: ahahah ! you were stalking me !
+    GroundTruth: take it easy . they will get caught .
+
+21.
+text:
+	a. what qualities do you think a senior executive should possess ?
+	b. generally speaking , he needs creativity , the ability to communicate , sense of personal responsibilities , the ability to solve problems and so on .
+	a. do you have all these qualities ?	
+labels:
+    DialoGPT: Yes, I have all of them.
+    Blender90M: yes , i have all of them .
+    TCVAE: yes , i have all of them .
+    CTCVAE: i am not sure what kind of thing is to do at every position .
+    GroundTruth: yes , i have all of them . i am totally competent to be a senior executive .
+
+22.
+text:
+	a. can i help you ?
+	b. i ' d like the double cheese burger meal , please .
+	a. what kind of drink would you like with that ?	
+labels:
+	DialoGPT: I'm not sure.
+    Blender90M: a coke .
+    TCVAE: i ' m a sprite .
+    CTCVAE: i have a coke .
+	GroundTruth: just coke will be fine .
+
+23.
+text:
+	a. hello sir , may i help you ? 
+	b. yeah , i accidentally dropped my phone in the toilet . 
+	a. i see . well , you have come to the right place . we have over one hundred models of more than twenty leading mobile phone manufacturers .	
+labels:
+    DialoGPT: Really?
+    Blender90M: that ' s a lot .
+    TCVAE: sounds interesting . i ' ll take it . what else ?
+    CTCVAE: that sounds like a good idea . it ' s just the end of this week .
+    GroundTruth: sounds good . i don ' t want it to be too expensive , maybe something mid - range .
+
+24.
+text: 
+	a. hello , may i help you ?
+	b. yes . we ' re interested in seeing the rooms for rent .
+	a. oh , how nice . they ' re bright rooms and the house is very quiet .	
+labels:
+    DialoGPT: How much is the rent?
+    Blender90M: how much is the rent ?
+    TCVAE: what ' s the location ?
+    CTCVAE: that ' s exactly what we said .
+    GroundTruth: a nice quiet house is exactly what we ' re looking for .
+
+25.
+text:
+	a. do you have a reservation , sir ?
+	b. no , i ' m afraid we don ' t .
+	a. i ' m sorry the restaurant is full now . you have to wait for about half an hour . would you like to have a drink at the lounge until there ' s a table available .	
+labels:
+    DialoGPT: That's fine.
+    Blender90M: no , thank you .
+    TCVAE: well , thank you . i ' ll make a reservation .
+    CTCVAE: no problem . we would like to go out for a while . is there anything else ?
+    GroundTruth: no , thanks , i ' ll come back later . may i reserve a table for two ?
+
+26.
+text: 
+	a. what ' s the name of this street ?
+	b. university street . 
+	a. do you know of any banks near here ?	
+labels:
+    DialoGPT: No, I don't. 
+    Blender90M: no , i don ' t .
+    TCVAE: no , i ' m not familiar with the street .
+    CTCVAE: yes . i get off at the new york street .
+    GroundTruth: you ' ll see one at the corner on your right .
+
+27
+text:
+	a. am i ever hungry ? when will supper be ready ?
+	b. it ' s almost ready . can you set the table ?
+	a. all right .	
+labels:
+    DialoGPT: Thank you.
+    Blender90M: what do you want to eat ?
+    TCVAE: good choice !
+    CTCVAE: are you ready ?
+    GroundTruth: want to taste this dish ?
+
+28.
+text:
+	a. i can't believe obama is our president .
+	b. i am proud to know that he is our president .
+	a. you voted for him , right ?	
+labels:
+    DialoGPT: I did.
+    Blender90M: yes , i did .
+    TCVAE: i have faith in him .
+    CTCVAE: yes , i am the first candidate in the world .
+    GroundTruth: did you vote for him , because i know that i did .
+
+29
+text:
+	a. do you have coffee shops in china , too ?
+	b. yes , of course . there are many tea houses and bars in china , too . people can drink , eat and relax at these places .
+	a. you like to go to these places , don ' t you ?	
+labels:
+    DialoGPT: Yes, I do.
+    Blender90M: yes , i do .
+    TCVAE: yes , i like them very much .
+    CTCVAE: yes , i do . let ' s go and have a look .
+    GroundTruth: yes , sometimes the music there is so beautiful . it is very romantic . i can stay there for hours .
+
+30.
+text:
+	a. you look terrific and in good shape .
+	b. thank you .
+	a. how do you keep fit ?	
+labels:
+    DialoGPT: I exercise a lot.
+    Blender90M: i exercise every day .
+    TCVAE: i think i should wear a little hard suit .
+    CTCVAE: three years .
+    GroundTruth: i do yoga twice a weeks
+
+31.
+text:
+	a. hey , jim . it ' s time to wake up and get out of bed .
+	b. do i have to get up now ?
+	a. you ' d better get up , or you ' ll be late .	
+labels:
+    DialoGPT: What time is it now?
+    Blender90M: thank you .
+    TCVAE: i won't be late today .
+    CTCVAE: i don ' t know , but i can ' t get up early ? 
+    GroundTruth: what ' re you talking about ? my alarm even hasn ' t gone off yet .
+
+32.
+text:
+	a. what shall we do tonight ?
+	b. how about the cinema ?
+	a. that ' s a good idea . we haven ' t seen a film for ages . what would you like to see ?	
+labels:
+    DialoGPT: I'd like to go to the cinema.
+    Blender90M: i don ' t know . let ' s see .
+    TCVAE: sure . what ' s on ?
+    CTCVAE: that sounds like fun . which cinema do you prefer ?
+    GroundTruth: oh i don ' t know . titanic ?
+
+33.
+text:
+	a. excuse me . i have just missed the connection plane due to the heavy fog in london . can i change my ticket now ?
+	b. please show your ticket and passport .
+	a. here you are .	
+labels:
+    DialoGPT: Thank you.
+    Blender90M: please fill out this form .
+    TCVAE: i am sorry to hear that . here you go .
+    CTCVAE: don ' t worry . have you got the receipt ?
+    GroundTruth: which flight do you want to change ?
+
+34.
+text:
+	a. good morning . i need to speak with the property manager , please .
+	b. good morning . you are speaking to the property manager .
+	a. while it was raining last night , water started leaking in from the ceiling .	
+labels:
+    DialoGPT: Is there anything I can do for you?
+    Blender90M: may i have your name , please ?
+    TCVAE: yes , there must be some plumbing inside .
+    CTCVAE: are you sure of anything else ?
+    GroundTruth: was it leaking in the bedroom ?
+
+35.
+text:
+	a. how much is your last salary ? 
+	b. i have earned 10 , 000 a year including bonuses . 
+	a. how much do you want us to pay you ?	
+labels:
+    DialoGPT: 500 yuan a month.
+    Blender90M: i expect to be paid at least one thousand yuan a month .
+    TCVAE: i can give you one thousand yuan a month .
+    CTCVAE: i ' m afraid i can ' t afford to work on my current salary . besides , i have 3 , 000 yuan per month .
+    GroundTruth: i like to be paid more than that . hopefully , 150 , 000 a year . to be honest , i left the company to get more income .
+
+36.
+text:
+	a. what would you like for your main dish ?
+	b. steak , please . 
+	a. how would you like it ?	
+labels:
+    DialoGPT: i ' d like it medium .
+    Blender90M: i ' d like it medium .
+    TCVAE: it suits you very well .
+    CTCVAE: it tastes good , but it is too hot .
+    GroundTruth: medium rare , please .
+
+37
+text:
+	A. did you have a part - time job when you were still in school ?
+	B. no , i was way too busy studying all the time . how about you ?
+	A. yeah , i worked about twenty hours a week in a pizza restaurant .	
+labels:
+    DialoGPT: Did you like it?
+    Blender90M: did you enjoy it ?
+    TCVAE: really ? what was it like ?
+    CTCVAE: what did you do there ?
+    GroundTruth: what was that like ?
+
+38
+text:
+	A. ah , bob . just the person i wanted to see .
+	B. so what is it ?
+	A. you gotta help me out this time , buddy .	
+labels:
+    DialoGPT: No problem.
+    Blender90M: what ' s wrong ?
+    TCVAE: hey , shut up .
+    CTCVAE: um . . .
+    GroundTruth: another tough thing , i guess .
+
+39
+text:
+	A. hi , i need to make an appointment to see the doctor .
+	B. what seems to be the problem ?
+	A. i have a rash that i need a doctor to look at .
+labels:
+    DialoGPT: How long have you had it?
+    Blender90M: what kind of rash ?
+    TCVAE: i ' m sure you ' ll have an opening in your schedule . is that possible ?
+    CTCVAE: do you want any part - time job ?
+    GroundTruth: do you have a fever with that rash ?
+
+40
+text:
+	A. i am sorry , but i cannot stay for the rest of class today .
+	B. why do you need to leave early ?
+	A. i don ' t feel so good .	
+labels:
+    DialoGPT: Why not?
+    Blender90M: i ' m sorry to hear that .
+    TCVAE: that ' s too bad .
+    CTCVAE: have you picked out some books before ?
+    GroundTruth: what doesn ' t feel right ?
+
+41
+text:
+	A. what are your thoughts on the apartment ?
+	B. i think that it ' s absolutely gorgeous .
+	A. there aren ' t any problems with the apartment ?	
+labels:
+    DialoGPT: I don't think so.
+    Blender90M: no , not at all .
+    TCVAE: i don ' t know what the problem is .
+    CTCVAE: i don ' t think that there ' s anything wrong with it .
+    GroundTruth:i think that the apartment looks very nice , but i do see some problems .
+
+42
+text:
+	A. hi , jane . how are you doing this morning ?
+	B. i ' m all right , thanks . just a little tired .
+	A. late night ?	
+labels:
+    DialoGPT: Yep.
+    Blender90M: yes , i am .
+    TCVAE: no , i just got home .
+    CTCVAE: yeah , it was nice talking to you .
+    GroundTruth:yeah , i got home around two .
+
+43
+text:
+	A. we ' ve been waiting here for nearly ten minutes now , and there still isn ' t a bus in sight .
+	B. i ' m afraid we ' ll be late for the party .
+	A. have you got the time , tom ?	
+labels:
+    DialoGPT: No, I'm afraid not.
+    Blender90M: no , i haven ' t .
+    TCVAE: no . i missed it .
+    CTCVAE: don ' t worry . it ' s time to get off at the bus .
+    GroundTruth:  yes , my watch says a quarter to seven . but there is something wrong with my watch !
+
+44.
+text:
+	A. so , how should we get to the theatre ?
+	B. let ' s take the bus .
+	A. i hate the bus system in london ! the bus drivers are rude , the buses are never on time , and there are few people around who can help you .	
+labels:oh , that ' s too bad . but there ' s a lot of noise in the city .
+    DialoGPT: I agree with you.
+    Blender90M: i agree .
+    TCVAE: that ' s right .
+    CTCVAE: oh , that ' s too bad . but there ' s a lot of noise in the city .
+    GroundTruth: it ' s not that bad . you probably just had a bad experience once .
+
+45.
+text:
+	A. the train is leaving . hurry up ! which car are we in ?
+	B. let me see . oh , no . 11 .
+	A. here we are , car 11 . let ' s get in .	
+labels: ==GT: seats no . 20 and 21 . it ' s nice that we ' ve got a window seat .
+    DialoGPT: Thanks a lot.
+    Blender90M: thank you very much .
+    TCVAE: don ' t worry .
+    CTCVAE: no , it doesn ' t seem like we have to wait until the car gets late .
+    GroundTruth: seats no . 20 and 21 . it ' s nice that we ' ve got a window seat .
+
+46.
+text:
+	A. hey joe , what are you doing in this department store ?
+	B. hi , rita , i ' m just looking for a pair of shoes . i won ' t be here for long .
+	A. why not ? when i go shoe shopping , i have so many options for sneakers that i spend awhile looking at all of the choices .	
+labels:
+    DialoGPT: Well, I don't like the way you look at shoes.
+    Blender90M: i don ' t want to spend too much on shoes .
+    TCVAE: i don ' t need anything to do right now .
+    CTCVAE: that ' s a good idea . but i don ' t need any help at all .
+    GroundTruth: that ' s my problem . i don ' t have a lot of options .
+
+47
+text:
+	A. are you ready to go shopping ?
+	B. just a minute . i need to make a list of thinks that we need .
+	A. good idea . have you written down potatoes , carrots , and onions ?	
+labels:
+    DialoGPT: No, I haven't.
+    Blender90M: -
+    TCVAE: we need a few olives .
+    CTCVAE: oh , let ' s just make sure we can get the greens and vegetables . can you add it on the side of the street ? oh , i ' m going to add some vegetables .
+    GroundTruth: i don ' t have onions on my list . i ' ll add them . we should get some tea . is green tea ok or should we get the same tea that we usually get ?
+
+48
+text:
+	A. how many languages can you speak ?
+	B. besides chinese , i can speak english and french .
+	A. you mean you can read and write both of them ?	
+labels:
+    DialoGPT: Yes.
+    Blender90M: that ' s right .
+    TCVAE: yes . i ' m learning french quickly .
+    CTCVAE: yes . i can communicate with my english fluently .
+    GroundTruth: no , i can only carry on a simple conversation in french .
+
+49
+text:
+	A. i like chinese food .
+	B. i like chinese food , too . i like dumplings best .
+	A. at school , we sometimes have chinese food for lunch .	
+labels:
+	DialoGPT: What kind of Chinese food do you like best?
+	Blender90M: -
+	TCVAE: i ' m glad you like it .
+    CTCVAE: i don ' t agree with you .
+    GroundTruth: that ' s good . we eat chinese food only at the chinese restaurant .
+
+50
+text:
+	A. i would like to open an account please .
+	B. do you have any form of id ?
+	A. i have my tennis club card . is that good enough ?	
+labels:
+	DialoGPT: Yes, that's fine.
+	Blender90M: yes , that ' s fine .
+	TCVAE: just fill out this form .
+    CTCVAE: yes , of course . if you want to see your id , your card number .
+    GroundTruth: i ' m afraid not . it has to be a passport or a valid driver ' s license .

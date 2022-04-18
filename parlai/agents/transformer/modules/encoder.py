@@ -219,6 +219,9 @@ class TransformerEncoder(nn.Module):
             )
         self.output_scaling = _default(output_scaling, opt.get('output_scaling', 1.0))
 
+        self.input_layer = nn.Linear(self.embedding_size, self.d_model, bias=False)
+        nn.init.xavier_normal_(self.input_layer.weight)
+
     def forward_embedding(
         self,
         input: torch.LongTensor,
@@ -242,6 +245,7 @@ class TransformerEncoder(nn.Module):
         if positions is None:
             positions = (mask.cumsum(dim=1, dtype=torch.int64) - 1).clamp_(min=0)
         tensor = self.embeddings(input)
+        tensor = self.input_layer(tensor)
         if self.embeddings_scale:
             tensor = tensor * np.sqrt(self.dim)
 
